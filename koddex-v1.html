@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Koddex — Software Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --bg-2: #ffffff;
+    --ink: #0a0a0a;
+    --ink-dim: #6b6760;
+    --accent: #3d2bff;
+    --accent-2: #c4ff3d;
+    --line: rgba(0,0,0,.1);
+  }
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--ink); font-family: 'DM Sans', system-ui, sans-serif; }
+  .display { font-family: 'Unbounded', sans-serif; letter-spacing: -.03em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(circle 600px at 85% 15%, rgba(61,43,255,.08), transparent),
+      radial-gradient(circle 400px at 10% 80%, rgba(196,255,61,.15), transparent);
+  }
+
+  .back-link {
+    position: fixed; top: 20px; left: 20px; z-index: 1000;
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--ink); color: var(--bg);
+    text-decoration: none; font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all .2s;
+  }
+  .back-link:hover { background: var(--accent); }
+
+  main { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 120px 32px 80px; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 20px; }
+  .brand-mark { width: 36px; height: 36px; background: var(--ink); color: var(--bg); display: grid; place-items: center; border-radius: 8px; }
+  .brand-mark svg { width: 20px; height: 20px; }
+  .topbar nav { display: flex; gap: 32px; font-size: 14px; }
+  .topbar nav a { color: var(--ink-dim); text-decoration: none; transition: color .2s; }
+  .topbar nav a:hover { color: var(--ink); }
+
+  .hero { position: relative; margin-bottom: 140px; }
+  .eyebrow { font-size: 12px; letter-spacing: .25em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(48px, 9vw, 128px); line-height: .92; margin-bottom: 40px; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero-sub { max-width: 620px; font-size: 20px; line-height: 1.5; color: var(--ink-dim); margin-bottom: 48px; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 18px 32px; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer; border: 0; transition: all .25s ease; font-family: inherit; border-radius: 999px; }
+  .btn-primary { background: var(--ink); color: var(--bg); }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--bg); }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-bottom: 140px; padding: 40px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .metric .num { font-family: 'Unbounded', sans-serif; font-size: 48px; font-weight: 800; letter-spacing: -.03em; }
+  .metric .lbl { font-size: 13px; color: var(--ink-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: .08em; }
+
+  section { margin-bottom: 140px; }
+  .section-header { margin-bottom: 64px; display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; }
+  .section-header h2 { font-family: 'Unbounded', sans-serif; font-size: clamp(36px, 5vw, 64px); line-height: 1; max-width: 640px; }
+  .section-header p { color: var(--ink-dim); max-width: 380px; font-size: 16px; line-height: 1.5; }
+
+  .services { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); }
+  .service { background: var(--bg-2); padding: 48px 40px; transition: background .3s; }
+  .service:hover { background: var(--bg); }
+  .service-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); letter-spacing: .2em; margin-bottom: 24px; }
+  .service h3 { font-family: 'Unbounded', sans-serif; font-weight: 600; font-size: 28px; margin-bottom: 16px; line-height: 1.1; }
+  .service p { color: var(--ink-dim); font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
+  .service ul { list-style: none; font-size: 13px; color: var(--ink-dim); }
+  .service ul li { padding: 6px 0; border-top: 1px solid var(--line); }
+  .service ul li::before { content: '→ '; color: var(--accent); }
+
+  .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .step { padding-top: 24px; border-top: 2px solid var(--ink); }
+  .step-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; margin-bottom: 16px; }
+  .step h4 { font-family: 'Unbounded', sans-serif; font-weight: 600; font-size: 20px; margin-bottom: 12px; }
+  .step p { font-size: 14px; color: var(--ink-dim); line-height: 1.55; }
+
+  .about { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-text h2 { font-family: 'Unbounded', sans-serif; font-size: clamp(32px, 4vw, 56px); margin-bottom: 24px; line-height: 1.05; }
+  .about-text p { font-size: 17px; line-height: 1.6; color: var(--ink-dim); margin-bottom: 20px; }
+  .about-visual { aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--line); background: var(--ink); color: var(--accent-2); font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: clamp(60px, 10vw, 140px); }
+
+  .cta-block { padding: 80px 48px; text-align: center; border: 1px solid var(--line); background: var(--ink); color: var(--bg); }
+  .cta-block h2 { font-family: 'Unbounded', sans-serif; font-size: clamp(36px, 5vw, 64px); margin-bottom: 20px; line-height: 1; }
+  .cta-block p { color: rgba(255,255,255,.6); font-size: 18px; margin-bottom: 40px; }
+  .cta-block .btn-primary { background: var(--accent-2); color: var(--ink); }
+  .cta-block .btn-primary:hover { background: var(--bg); }
+
+  footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; color: var(--ink-dim); font-size: 13px; flex-wrap: wrap; gap: 16px; font-family: 'JetBrains Mono', monospace; }
+
+  @media (max-width: 800px) {
+    main { padding: 100px 20px 60px; }
+    .topbar { margin-bottom: 60px; }
+    .topbar nav { display: none; }
+    .metrics { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .services { grid-template-columns: 1fr; }
+    .process { grid-template-columns: 1fr 1fr; }
+    .about { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>
+</head>
+<body>
+<!-- ============ FLOATING VARIANT SWITCHER (v2) ============ -->
+<style>
+  .vsw {
+    position: fixed; top: 50%; left: 0;
+    transform: translateY(-50%);
+    z-index: 99999;
+    display: flex; align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .vsw__peek {
+    width: 14px; height: 200px;
+    background: linear-gradient(180deg, #6200ff, #ff00aa);
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    box-shadow: 0 0 24px rgba(98,0,255,.6), 0 0 48px rgba(255,0,170,.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .vsw__peek::before {
+    content: '';
+    width: 3px; height: 60px;
+    background: rgba(255,255,255,.7);
+    border-radius: 2px;
+    box-shadow: 0 0 8px white;
+  }
+  .vsw__hint {
+    position: absolute;
+    left: 22px; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10,1,24,.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #00ffd1;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #00ffd1;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 16px rgba(0,255,209,.3);
+    animation: vswHint 5s ease-in-out infinite;
+  }
+  @keyframes vswHint {
+    0%, 70%, 100% { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+    78%, 92% { opacity: 1; transform: translateY(-50%) translateX(4px); }
+  }
+  .vsw__panel {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%) translateX(-105%);
+    background: rgba(10,1,24,.94);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12);
+    border-left: none;
+    border-radius: 0 14px 14px 0;
+    padding: 14px;
+    width: 280px;
+    max-height: 90vh;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .4s cubic-bezier(.34,1.5,.5,1), opacity .3s;
+    box-shadow: 8px 0 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
+    color: #f0e9ff;
+  }
+  .vsw__panel::-webkit-scrollbar { width: 4px; }
+  .vsw__panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
+  .vsw:hover .vsw__panel {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .vsw:hover .vsw__hint { animation: none; opacity: 0; }
+  .vsw::after {
+    content: '';
+    position: absolute;
+    left: 14px; top: -50px; bottom: -50px;
+    width: 280px;
+    pointer-events: none;
+  }
+  .vsw:hover::after { pointer-events: auto; }
+
+  .vsw__head {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .vsw__head h3 {
+    font-family: 'Major Mono Display', 'Courier New', monospace;
+    font-size: 13px;
+    margin: 0 0 3px;
+    color: #f0e9ff;
+    letter-spacing: -.01em;
+  }
+  .vsw__head p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    margin: 0;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #8a7ab8;
+  }
+  .vsw__head p span { color: #00ffd1; }
+
+  .vsw__section {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #5a4e85;
+    margin: 12px 0 6px;
+    padding-left: 2px;
+  }
+
+  .vsw__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .vsw__card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 7px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: all .2s ease;
+    position: relative;
+    display: block;
+  }
+  .vsw__card:hover {
+    transform: translateY(-2px) scale(1.04);
+    border-color: #00ffd1;
+    box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 14px rgba(0,255,209,.3);
+    z-index: 5;
+  }
+  .vsw__card.is-current {
+    border-color: #00ffd1;
+    box-shadow: 0 0 12px rgba(0,255,209,.3);
+  }
+  .vsw__card.is-current::after {
+    content: '';
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 6px; height: 6px;
+    background: #00ffd1;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ffd1;
+    z-index: 2;
+    animation: vswPulse 2s ease-in-out infinite;
+  }
+  @keyframes vswPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .6; transform: scale(1.4); }
+  }
+  .vsw__thumb {
+    height: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vsw__info { padding: 4px 6px 5px; }
+  .vsw__info .vsw__name {
+    font-size: 9px;
+    font-weight: 600;
+    color: #f0e9ff;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== THUMBS — NEW SITES ===== */
+  .vsw-th-y2k {
+    background: radial-gradient(circle at 30% 30%, rgba(98,0,255,.8), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,0,170,.7), transparent 50%), #0a0118;
+  }
+  .vsw-th-y2k::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 60%; height: 24%;
+    background: linear-gradient(90deg, #00ffd1, #ff00aa);
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(0,255,209,.6);
+  }
+  .vsw-th-y2k::after {
+    content: ''; position: absolute; top: 5px; left: 5px; right: 5px;
+    height: 3px; background: rgba(255,255,255,.15); border-radius: 2px;
+  }
+
+  .vsw-th-tech {
+    background: #050505;
+    background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  .vsw-th-tech::before {
+    content: 'K'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+    color: white; letter-spacing: -.04em;
+  }
+  .vsw-th-tech::after {
+    content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+    width: 30%; height: 2px; background: #fb923c; border-radius: 1px;
+  }
+
+  .vsw-th-apple {
+    background: #fbfbfd;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-apple::before {
+    content: ''; width: 50%; height: 50%;
+    background: linear-gradient(135deg, #007aff, #5856d6);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.15);
+  }
+  .vsw-th-apple::after {
+    content: ''; position: absolute; top: 5px; left: 5px;
+    width: 30%; height: 2px; background: #1d1d1f; border-radius: 1px;
+  }
+
+  .vsw-th-stripe {
+    background: linear-gradient(135deg, #635bff 0%, #00d4ff 50%, #06d6a0 100%);
+  }
+  .vsw-th-stripe::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 70%; height: 28%; background: white;
+    border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  }
+  .vsw-th-stripe::after {
+    content: ''; position: absolute; top: 5px; left: 5px;
+    width: 35%; height: 2px; background: white; border-radius: 1px; opacity: .8;
+  }
+
+  .vsw-th-kinfolk {
+    background: #f5f1ea;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 3px;
+  }
+  .vsw-th-kinfolk::before {
+    content: 'K'; font-family: 'Fraunces', Georgia, serif;
+    font-size: 24px; font-style: italic; font-weight: 300;
+    color: #c2410c; line-height: 1;
+  }
+  .vsw-th-kinfolk::after {
+    content: ''; width: 30%; height: 1px; background: #c2410c;
+  }
+
+  .vsw-th-brutalist {
+    background: #f0ee2c;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; padding: 3px;
+  }
+  .vsw-th-brutalist::before {
+    content: 'KOD'; font-family: 'Archivo Black', sans-serif;
+    font-size: 13px; color: #0a0a0a; letter-spacing: -.04em; line-height: 1;
+  }
+  .vsw-th-brutalist::after {
+    content: 'DEX'; font-family: 'Archivo Black', sans-serif;
+    font-size: 13px; background: #ff3030; color: white;
+    padding: 0 3px; letter-spacing: -.04em; line-height: 1.1;
+    transform: rotate(-3deg); margin-top: 1px;
+  }
+
+  .vsw-th-swiss {
+    background: white;
+    background-image: linear-gradient(90deg, rgba(0,0,0,.06) 1px, transparent 1px);
+    background-size: 9px 100%;
+    display: flex; align-items: flex-end; padding: 5px;
+  }
+  .vsw-th-swiss::before {
+    content: '21+'; font-family: 'Inter Tight', sans-serif;
+    font-weight: 300; font-size: 22px; color: #000;
+    letter-spacing: -.05em; line-height: .9;
+  }
+  .vsw-th-swiss::after {
+    content: ''; position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 2px; background: #ef4444;
+  }
+
+  .vsw-th-terminal { background: #0c0c0c; }
+  .vsw-th-terminal::before {
+    content: '● ● ●'; position: absolute; top: 4px; left: 5px;
+    font-size: 5px; color: #4ade80; letter-spacing: 1px;
+  }
+  .vsw-th-terminal::after {
+    content: '$ ./kx_'; position: absolute; bottom: 8px; left: 5px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 8px; color: #4ade80;
+    text-shadow: 0 0 3px rgba(74,222,128,.5);
+  }
+
+  /* ===== THUMBS — ORIGINAL VITRINES ===== */
+  .vsw-th-v1 {
+    background: #f5f1ea;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-v1::before {
+    content: 'Koddex';
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: #1a1a1a;
+    letter-spacing: -.02em;
+  }
+  .vsw-th-v1::after {
+    content: ''; position: absolute; bottom: 5px; right: 5px;
+    width: 8px; height: 8px;
+    background: #2563eb;
+    border-radius: 50%;
+  }
+
+  .vsw-th-v2 {
+    background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-v2::before {
+    content: 'K';
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    color: white;
+    line-height: 1;
+  }
+  .vsw-th-v2::after {
+    content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+    width: 18%; height: 2px;
+    background: #fb923c;
+    border-radius: 1px;
+  }
+
+  .vsw-th-v3 {
+    background: #faf6f0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    padding: 4px;
+  }
+  .vsw-th-v3::before {
+    content: ''; background: #ff7a5c; border-radius: 3px;
+  }
+  .vsw-th-v3::after {
+    content: ''; background: #6ee7b7; border-radius: 3px;
+    grid-row: 1 / span 2;
+  }
+  .vsw-th-v3 > .v3x {
+    background: #fde68a; border-radius: 3px;
+  }
+
+  .vsw-th-v4 {
+    background: #1e1e1e;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+  }
+  .vsw-th-v4::before {
+    content: ''; height: 4px;
+    background: linear-gradient(90deg, #569cd6 30%, transparent 30%);
+    border-radius: 1px;
+  }
+  .vsw-th-v4::after {
+    content: ''; height: 4px;
+    background: linear-gradient(90deg, transparent 10%, #c586c0 10%, #c586c0 50%, transparent 50%, #ce9178 60%, #ce9178 90%, transparent 90%);
+    border-radius: 1px;
+  }
+  .vsw-th-v4 > .v4x {
+    height: 4px;
+    background: linear-gradient(90deg, #4ec9b0 25%, transparent 25%, transparent 30%, #d4d4d4 30%, #d4d4d4 32%, transparent 32%);
+    border-radius: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .vsw__panel { width: 240px; padding: 10px; }
+    .vsw__thumb { height: 40px; }
+    .vsw__peek { height: 140px; }
+    .vsw__grid { gap: 5px; }
+  }
+</style>
+
+<div class="vsw">
+  <div class="vsw__peek">
+    <span class="vsw__hint">12 versões ✦</span>
+  </div>
+  <div class="vsw__panel">
+    <div class="vsw__head">
+      <h3>switch style</h3>
+      <p>// <span>12 versões</span> · clique pra trocar</p>
+    </div>
+
+    <div class="vsw__section">// PRINCIPAL</div>
+    <div class="vsw__grid">
+      <a href="index.html" class="vsw__card" data-id="y2k">
+        <div class="vsw__thumb vsw-th-y2k"></div>
+        <div class="vsw__info"><div class="vsw__name">Y2K</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// SITES COMPLETOS · LOTE 2</div>
+    <div class="vsw__grid">
+      <a href="novo-site-brutalist.html" class="vsw__card" data-id="brutalist">
+        <div class="vsw__thumb vsw-th-brutalist"></div>
+        <div class="vsw__info"><div class="vsw__name">Brutalist</div></div>
+      </a>
+      <a href="novo-site-swiss.html" class="vsw__card" data-id="swiss">
+        <div class="vsw__thumb vsw-th-swiss"></div>
+        <div class="vsw__info"><div class="vsw__name">Swiss</div></div>
+      </a>
+      <a href="novo-site-terminal.html" class="vsw__card" data-id="terminal">
+        <div class="vsw__thumb vsw-th-terminal"></div>
+        <div class="vsw__info"><div class="vsw__name">Terminal</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// SITES COMPLETOS · LOTE 1</div>
+    <div class="vsw__grid">
+      <a href="novo-site-tech.html" class="vsw__card" data-id="tech">
+        <div class="vsw__thumb vsw-th-tech"></div>
+        <div class="vsw__info"><div class="vsw__name">Tech</div></div>
+      </a>
+      <a href="novo-site-apple.html" class="vsw__card" data-id="apple">
+        <div class="vsw__thumb vsw-th-apple"></div>
+        <div class="vsw__info"><div class="vsw__name">Apple</div></div>
+      </a>
+      <a href="novo-site-stripe.html" class="vsw__card" data-id="stripe">
+        <div class="vsw__thumb vsw-th-stripe"></div>
+        <div class="vsw__info"><div class="vsw__name">Stripe</div></div>
+      </a>
+      <a href="novo-site-kinfolk.html" class="vsw__card" data-id="kinfolk">
+        <div class="vsw__thumb vsw-th-kinfolk"></div>
+        <div class="vsw__info"><div class="vsw__name">Kinfolk</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// VITRINES CURTAS · ORIGINAIS</div>
+    <div class="vsw__grid">
+      <a href="koddex-v1.html" class="vsw__card" data-id="v1">
+        <div class="vsw__thumb vsw-th-v1"></div>
+        <div class="vsw__info"><div class="vsw__name">v1 · Modern</div></div>
+      </a>
+      <a href="koddex-v2.html" class="vsw__card" data-id="v2">
+        <div class="vsw__thumb vsw-th-v2"></div>
+        <div class="vsw__info"><div class="vsw__name">v2 · Editorial</div></div>
+      </a>
+      <a href="koddex-v3.html" class="vsw__card" data-id="v3">
+        <div class="vsw__thumb vsw-th-v3"><span class="v3x"></span></div>
+        <div class="vsw__info"><div class="vsw__name">v3 · Playful</div></div>
+      </a>
+      <a href="koddex-v4.html" class="vsw__card" data-id="v4">
+        <div class="vsw__thumb vsw-th-v4"><span class="v4x"></span></div>
+        <div class="vsw__info"><div class="vsw__name">v4 · IDE</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var map = {
+      'index.html': 'y2k', '': 'y2k',
+      'novo-site-tech.html': 'tech',
+      'novo-site-apple.html': 'apple',
+      'novo-site-stripe.html': 'stripe',
+      'novo-site-kinfolk.html': 'kinfolk',
+      'novo-site-brutalist.html': 'brutalist',
+      'novo-site-swiss.html': 'swiss',
+      'novo-site-y2k.html': 'y2k',
+      'novo-site-terminal.html': 'terminal',
+      'koddex-v1.html': 'v1',
+      'koddex-v2.html': 'v2',
+      'koddex-v3.html': 'v3',
+      'koddex-v4.html': 'v4'
+    };
+    var current = map[page] || 'y2k';
+    var card = document.querySelector('.vsw__card[data-id="'+current+'"]');
+    if (card) card.classList.add('is-current');
+  })();
+</script>
+<!-- ============ END VARIANT SWITCHER ============ -->
+
+<a href="index.html" class="back-link">← Voltar</a>
+
+<main>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4 L4 20 L8 20 L8 14 L14 20 L20 20 L12 12 L20 4 L14 4 L8 10 L8 4 Z" fill="currentColor"/></svg></div>
+      <span class="display">KODDEX</span>
+    </div>
+    <nav>
+      <a href="#services">Serviços</a>
+      <a href="#process">Processo</a>
+      <a href="#about">Sobre</a>
+      <a href="#contact">Contato</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow mono">[ Software Studio · Est. 2026 ]</div>
+    <h1 class="display">Produtos digitais que <span class="accent">funcionam</span>.</h1>
+    <p class="hero-sub">Desenvolvemos sistemas, apps e sites sob medida para empresas que querem ir além do template pronto. Design refinado, código limpo, entregas rápidas.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#contact">Iniciar um projeto →</a>
+      <a class="btn btn-ghost" href="#services">Ver serviços</a>
+    </div>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><div class="num">21</div><div class="lbl">Anos de formação</div></div>
+    <div class="metric"><div class="num">100%</div><div class="lbl">Código sob medida</div></div>
+    <div class="metric"><div class="num">∞</div><div class="lbl">Stacks modernas</div></div>
+    <div class="metric"><div class="num">1:1</div><div class="lbl">Atendimento direto</div></div>
+  </section>
+
+  <section id="services">
+    <div class="section-header">
+      <h2 class="display">Serviços.</h2>
+      <p>Do MVP ao produto completo — construímos a camada digital do seu negócio com tecnologia moderna e atenção obsessiva aos detalhes.</p>
+    </div>
+    <div class="services">
+      <div class="service">
+        <div class="service-num">01 / SISTEMAS</div>
+        <h3>Sistemas Web sob Medida</h3>
+        <p>Plataformas internas, ERPs, CRMs, dashboards e ferramentas que automatizam o dia-a-dia da sua operação.</p>
+        <ul><li>APIs e backends robustos</li><li>Painéis administrativos</li><li>Integrações com sistemas existentes</li><li>Autenticação e controle de acesso</li></ul>
+      </div>
+      <div class="service">
+        <div class="service-num">02 / APPS</div>
+        <h3>Aplicativos & SaaS</h3>
+        <p>Apps e produtos digitais completos, do primeiro wireframe ao deploy, prontos pra escalar com seu negócio.</p>
+        <ul><li>Apps web responsivos</li><li>Arquitetura multi-tenant</li><li>Pagamentos e assinaturas</li><li>Analytics e métricas</li></ul>
+      </div>
+      <div class="service">
+        <div class="service-num">03 / SITES</div>
+        <h3>Sites Institucionais</h3>
+        <p>Presença digital que converte. Sites rápidos, otimizados pra SEO e com identidade visual impecável.</p>
+        <ul><li>Landing pages de alta conversão</li><li>Sites institucionais e portfólios</li><li>Blogs e áreas de conteúdo</li><li>Painel pro cliente editar</li></ul>
+      </div>
+      <div class="service">
+        <div class="service-num">04 / SUPORTE</div>
+        <h3>Manutenção & Evolução</h3>
+        <p>Seu sistema não para no deploy. Acompanhamento contínuo, novas features e melhorias conforme o negócio cresce.</p>
+        <ul><li>Correção de bugs</li><li>Novas funcionalidades</li><li>Monitoramento e performance</li><li>Atualizações de segurança</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="section-header">
+      <h2 class="display">Como trabalhamos.</h2>
+      <p>Um processo claro do briefing ao deploy. Sem surpresas, sem burocracia, com entregas frequentes.</p>
+    </div>
+    <div class="process">
+      <div class="step"><div class="step-num">— 01</div><h4>Entendimento</h4><p>Conversa pra entender o problema, os usuários e os objetivos. Mapeamento do escopo e restrições.</p></div>
+      <div class="step"><div class="step-num">— 02</div><h4>Prototipação</h4><p>Wireframes e protótipos navegáveis antes de escrever qualquer código. Você valida o fluxo visualmente.</p></div>
+      <div class="step"><div class="step-num">— 03</div><h4>Construção</h4><p>Desenvolvimento com entregas incrementais. Você acompanha o progresso em um ambiente de homologação.</p></div>
+      <div class="step"><div class="step-num">— 04</div><h4>Lançamento</h4><p>Deploy, treinamento e documentação. E um plano claro pra próximas evoluções do sistema.</p></div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="about-text">
+      <h2 class="display">Estúdio pequeno, atenção grande.</h2>
+      <p>A Koddex é um estúdio focado em qualidade acima de volume. Poucos projetos por vez, envolvimento direto, resultado mensurável.</p>
+      <p>Mais de duas décadas de formação em engenharia de software, combinadas com o que há de mais atual em stacks e design. Você fala com quem constrói.</p>
+    </div>
+    <div class="about-visual">K</div>
+  </section>
+
+  <section id="contact">
+    <div class="cta-block">
+      <h2 class="display">Vamos construir algo bom.</h2>
+      <p>Me conta sua ideia. Respondo em até 24h com uma primeira proposta.</p>
+      <a class="btn btn-primary" href="mailto:ola@koddex.com.br">Enviar briefing →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 Koddex · Presidente Prudente, SP</div>
+    <div>ola@koddex.com.br</div>
+  </footer>
+</main>
+
+</body>
+</html>

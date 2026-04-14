@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Koddex — A craft of software</title>
+<meta name="description" content="An independent software studio crafting systems, applications and sites with care.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --bg-2: #faf7f1;
+    --bg-3: #ede7dc;
+    --ink: #1a1612;
+    --ink-2: #4a4239;
+    --ink-dim: #847a6b;
+    --ink-faint: #b5ac9d;
+    --line: #d4cab8;
+    --line-soft: #e0d6c2;
+    --accent: #c2410c;
+    --accent-soft: #ea580c;
+    --gold: #a16207;
+  }
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .serif { font-family: 'Fraunces', Georgia, serif; letter-spacing: -.02em; }
+  .mono { font-family: 'Geist Mono', monospace; }
+
+  /* Subtle paper texture */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(ellipse at top, rgba(194,65,12,.04), transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245,241,234,.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  nav .wrap {
+    max-width: 1240px; margin: 0 auto;
+    padding: 22px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  nav .logo .star {
+    color: var(--accent);
+    font-size: 18px;
+  }
+  nav .links {
+    display: flex; gap: 36px; align-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+  nav .links a {
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  nav .links a:hover { color: var(--accent); }
+  nav .links a.cta { color: var(--accent); }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative; z-index: 1;
+    padding: 100px 32px 80px;
+    max-width: 1240px; margin: 0 auto;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 80px;
+  }
+  .hero-left .meta {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .hero-left .meta .line-deco {
+    width: 40px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-left h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 9vw, 144px);
+    line-height: .9;
+    letter-spacing: -.04em;
+    color: var(--ink);
+  }
+  .hero-left h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero-right {
+    padding-bottom: 60px;
+  }
+  .hero-right p {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin-bottom: 32px;
+    letter-spacing: -.01em;
+  }
+  .hero-right p em {
+    font-style: italic;
+    color: var(--ink);
+  }
+  .hero-right .ctas {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 24px;
+    font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 0;
+    font-family: inherit;
+    transition: all .25s ease;
+    font-weight: 500;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 999px;
+  }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--bg); }
+  .btn .arr {
+    display: inline-grid; place-items: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 12px;
+    transition: transform .25s;
+  }
+  .btn:hover .arr { transform: rotate(-45deg); }
+  .btn-ghost .arr { background: var(--ink); }
+  .btn-ghost:hover .arr { background: var(--accent); }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    padding: 18px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-block;
+    animation: scroll 50s linear infinite;
+    padding-left: 100%;
+  }
+  .marquee-track span { display: inline-block; padding: 0 28px; }
+  .marquee-track .sep { color: var(--accent); }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
+  /* ============ SECTION SCAFFOLDING ============ */
+  section.block {
+    padding: 140px 32px;
+    max-width: 1240px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  .section-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-num::before {
+    content: '';
+    width: 48px; height: 1px;
+    background: var(--ink-faint);
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: -.03em;
+    margin-bottom: 24px;
+  }
+  .section-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  /* ============ STATS / FACTS ============ */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .fact {
+    padding: 48px 32px;
+    border-right: 1px solid var(--line);
+    text-align: left;
+  }
+  .fact:last-child { border-right: none; }
+  .fact .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 1;
+    letter-spacing: -.04em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .fact .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* ============ SERVICES ============ */
+  .services-list {
+    border-top: 1px solid var(--line);
+  }
+  .service-row {
+    display: grid;
+    grid-template-columns: 60px 280px 1fr 60px;
+    gap: 40px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+    cursor: pointer;
+    transition: padding .4s ease;
+    position: relative;
+  }
+  .service-row:hover { padding-left: 24px; }
+  .service-row:hover .service-title { color: var(--accent); }
+  .service-row:hover .arrow { transform: translateX(8px); color: var(--accent); }
+  .service-idx {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .service-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    transition: color .3s ease;
+  }
+  .service-title em { font-style: italic; font-weight: 300; }
+  .service-desc {
+    color: var(--ink-2);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .arrow {
+    color: var(--ink-faint);
+    font-size: 20px;
+    transition: all .3s ease;
+    justify-self: end;
+  }
+
+  /* ============ PORTFOLIO ============ */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px 48px;
+    margin-top: 32px;
+  }
+  .work {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+    transition: transform .4s ease;
+  }
+  .work:hover { transform: translateY(-4px); }
+  .work .visual {
+    aspect-ratio: 4 / 5;
+    margin-bottom: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+  .work .visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--line);
+  }
+  .work .meta {
+    display: flex; gap: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+  }
+  .work .meta .sep { color: var(--ink-faint); }
+  .work h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    margin-bottom: 10px;
+  }
+  .work h3 em { font-style: italic; color: var(--accent); }
+  .work p {
+    font-size: 16px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .work .stack {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: .1em;
+  }
+
+  /* Work visuals — paper-like, warm gradient compositions */
+  .work-1 .visual {
+    background:
+      linear-gradient(135deg, #c2410c 0%, #d97706 50%, #fbbf24 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .work-1 .visual::before {
+    content: '';
+    width: 60%; height: 70%;
+    background: rgba(245,241,234,.95);
+    z-index: 1;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,.2);
+  }
+
+  .work-2 .visual {
+    background:
+      linear-gradient(135deg, #1a1612 0%, #4a4239 100%);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 30px;
+  }
+  .work-2 .visual::before {
+    content: '';
+    width: 80%; height: 50%;
+    background:
+      linear-gradient(0deg, transparent 80%, rgba(245,241,234,.6) 80%, rgba(245,241,234,.6) 82%, transparent 82%),
+      linear-gradient(0deg, transparent 60%, rgba(245,241,234,.6) 60%, rgba(245,241,234,.6) 62%, transparent 62%),
+      linear-gradient(0deg, transparent 40%, rgba(245,241,234,.6) 40%, rgba(245,241,234,.6) 42%, transparent 42%),
+      linear-gradient(0deg, transparent 20%, rgba(245,241,234,.6) 20%, rgba(245,241,234,.6) 22%, transparent 22%);
+    z-index: 1;
+  }
+
+  .work-3 .visual {
+    background:
+      radial-gradient(circle at 30% 30%, #ea580c 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, #a16207 0%, transparent 50%),
+      var(--bg-2);
+    display: grid;
+    place-items: center;
+  }
+  .work-3 .visual::before {
+    content: '';
+    width: 50%; aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: inset 0 -20px 60px rgba(255,255,255,.1);
+    z-index: 1;
+  }
+
+  .work-4 .visual {
+    background: var(--bg-2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    padding: 20px;
+    gap: 12px;
+  }
+  .work-4 .visual > div {
+    background: linear-gradient(135deg, #c2410c, #ea580c);
+  }
+  .work-4 .visual > div:nth-child(2) { background: linear-gradient(135deg, #1a1612, #4a4239); }
+  .work-4 .visual > div:nth-child(3) { background: linear-gradient(135deg, #a16207, #ca8a04); }
+  .work-4 .visual > div:nth-child(4) { background: linear-gradient(135deg, var(--bg-3), #d4cab8); }
+
+  /* ============ MANIFESTO / QUOTE ============ */
+  .manifesto {
+    max-width: 1000px; margin: 0 auto;
+    text-align: center;
+    padding: 60px 0;
+  }
+  .manifesto-body {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(28px, 4vw, 52px);
+    line-height: 1.25;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .manifesto-body em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .manifesto-body .dim {
+    color: var(--ink-dim);
+  }
+  .manifesto-attr {
+    margin-top: 60px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ============ PROCESS ============ */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 60px;
+  }
+  .step {
+    background: var(--bg);
+    padding: 48px 36px;
+    min-height: 280px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: background .3s;
+  }
+  .step:hover { background: var(--bg-2); }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -.04em;
+    margin-bottom: 12px;
+  }
+  .step-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 24px;
+  }
+  .step h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 12px;
+    letter-spacing: -.01em;
+  }
+  .step p {
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+
+  /* ============ ABOUT (asymmetric editorial) ============ */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-image {
+    background:
+      linear-gradient(135deg, #c2410c, #1a1612);
+    aspect-ratio: 3 / 4;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-image::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(245,241,234,.2), transparent 50%),
+      radial-gradient(ellipse at 70% 70%, rgba(0,0,0,.3), transparent 50%);
+  }
+  .about-image::after {
+    content: 'K';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 280px;
+    color: rgba(245,241,234,.95);
+    line-height: 1;
+  }
+  .about-text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    margin-bottom: 32px;
+  }
+  .about-text h2 em { font-style: italic; color: var(--accent); }
+  .about-text p {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 20px;
+  }
+  .about-text p em { color: var(--ink); font-style: italic; }
+  .about-points {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    display: grid; gap: 20px;
+  }
+  .about-point {
+    display: flex; gap: 16px;
+    align-items: flex-start;
+  }
+  .about-point .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent);
+    font-size: 18px;
+    flex-shrink: 0;
+    width: 32px;
+  }
+  .about-point .text strong {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .about-point .text span {
+    font-size: 14px;
+    color: var(--ink-dim);
+  }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial {
+    text-align: center;
+    max-width: 900px; margin: 0 auto;
+    padding: 60px 0;
+  }
+  .testimonial .quote-mark {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 100px;
+    color: var(--accent);
+    line-height: .5;
+    margin-bottom: 32px;
+    display: block;
+  }
+  .testimonial blockquote {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(24px, 3vw, 40px);
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin-bottom: 40px;
+  }
+  .testimonial blockquote em { font-style: italic; color: var(--accent); }
+  .testimonial .author {
+    display: inline-flex; align-items: center; gap: 16px;
+  }
+  .testimonial .avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+  }
+  .testimonial .author-info { text-align: left; }
+  .testimonial .author-info .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .testimonial .author-info .role {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-top: 2px;
+  }
+
+  /* ============ CTA FINAL ============ */
+  .cta-block {
+    max-width: 1240px; margin: 0 auto;
+    padding: 100px 32px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 60px;
+    align-items: end;
+  }
+  .cta-block h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 8vw, 128px);
+    line-height: .9;
+    letter-spacing: -.04em;
+  }
+  .cta-block h2 em { font-style: italic; color: var(--accent); }
+  .cta-right {
+    padding-bottom: 24px;
+  }
+  .cta-right p {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 19px;
+    color: var(--ink-2);
+    margin-bottom: 32px;
+    line-height: 1.55;
+  }
+  .cta-right .ctas {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .cta-right .contact-list {
+    display: grid; gap: 14px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+  }
+  .cta-right .contact-list .row {
+    display: flex; justify-content: space-between;
+    color: var(--ink-2);
+  }
+  .cta-right .contact-list .row .k {
+    color: var(--ink-faint);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+  .cta-right .contact-list .row .v a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: color .2s, border-color .2s;
+  }
+  .cta-right .contact-list .row .v a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 60px 32px 32px;
+  }
+  .footer-wrap {
+    max-width: 1240px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: -.02em;
+    margin-bottom: 16px;
+  }
+  .footer-brand .logo .star { color: var(--accent-soft); }
+  .footer-brand p {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.5;
+    color: rgba(245,241,234,.7);
+    max-width: 320px;
+  }
+  .footer-col h5 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    margin-bottom: 18px;
+  }
+  .footer-col a {
+    display: block;
+    color: rgba(245,241,234,.7);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 0;
+    transition: color .15s;
+  }
+  .footer-col a:hover { color: var(--bg); }
+  .footer-bottom {
+    max-width: 1240px; margin: 0 auto;
+    padding-top: 32px;
+    border-top: 1px solid rgba(245,241,234,.1);
+    display: flex; justify-content: space-between;
+    color: rgba(245,241,234,.4);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav .links a:not(.cta) { display: none; }
+    nav .wrap { padding: 16px 20px; }
+    .hero { padding: 60px 20px 40px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-right { padding-bottom: 0; }
+    section.block { padding: 80px 20px; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .fact { padding: 32px 20px; }
+    .fact:nth-child(2) { border-right: none; }
+    .fact:nth-child(1), .fact:nth-child(2) { border-bottom: 1px solid var(--line); }
+    .service-row { grid-template-columns: 32px 1fr 24px; gap: 16px; padding: 24px 0; }
+    .service-desc { display: none; }
+    .portfolio-grid { grid-template-columns: 1fr; gap: 48px; }
+    .process { grid-template-columns: 1fr 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-image { max-width: 320px; }
+    .cta-block { grid-template-columns: 1fr; gap: 32px; padding: 60px 20px; }
+    .footer-wrap { grid-template-columns: 1fr 1fr; padding: 0 20px; }
+  }
+  @media (max-width: 500px) {
+    .process { grid-template-columns: 1fr; }
+    .footer-wrap { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<!-- ============ FLOATING VARIANT SWITCHER (v2) ============ -->
+<style>
+  .vsw {
+    position: fixed; top: 50%; left: 0;
+    transform: translateY(-50%);
+    z-index: 99999;
+    display: flex; align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .vsw__peek {
+    width: 14px; height: 200px;
+    background: linear-gradient(180deg, #6200ff, #ff00aa);
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    box-shadow: 0 0 24px rgba(98,0,255,.6), 0 0 48px rgba(255,0,170,.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .vsw__peek::before {
+    content: '';
+    width: 3px; height: 60px;
+    background: rgba(255,255,255,.7);
+    border-radius: 2px;
+    box-shadow: 0 0 8px white;
+  }
+  .vsw__hint {
+    position: absolute;
+    left: 22px; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10,1,24,.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #00ffd1;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #00ffd1;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 16px rgba(0,255,209,.3);
+    animation: vswHint 5s ease-in-out infinite;
+  }
+  @keyframes vswHint {
+    0%, 70%, 100% { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+    78%, 92% { opacity: 1; transform: translateY(-50%) translateX(4px); }
+  }
+  .vsw__panel {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%) translateX(-105%);
+    background: rgba(10,1,24,.94);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12);
+    border-left: none;
+    border-radius: 0 14px 14px 0;
+    padding: 14px;
+    width: 280px;
+    max-height: 90vh;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .4s cubic-bezier(.34,1.5,.5,1), opacity .3s;
+    box-shadow: 8px 0 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
+    color: #f0e9ff;
+  }
+  .vsw__panel::-webkit-scrollbar { width: 4px; }
+  .vsw__panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
+  .vsw:hover .vsw__panel {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .vsw:hover .vsw__hint { animation: none; opacity: 0; }
+  .vsw::after {
+    content: '';
+    position: absolute;
+    left: 14px; top: -50px; bottom: -50px;
+    width: 280px;
+    pointer-events: none;
+  }
+  .vsw:hover::after { pointer-events: auto; }
+
+  .vsw__head {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .vsw__head h3 {
+    font-family: 'Major Mono Display', 'Courier New', monospace;
+    font-size: 13px;
+    margin: 0 0 3px;
+    color: #f0e9ff;
+    letter-spacing: -.01em;
+  }
+  .vsw__head p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    margin: 0;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #8a7ab8;
+  }
+  .vsw__head p span { color: #00ffd1; }
+
+  .vsw__section {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #5a4e85;
+    margin: 12px 0 6px;
+    padding-left: 2px;
+  }
+
+  .vsw__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .vsw__card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 7px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: all .2s ease;
+    position: relative;
+    display: block;
+  }
+  .vsw__card:hover {
+    transform: translateY(-2px) scale(1.04);
+    border-color: #00ffd1;
+    box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 14px rgba(0,255,209,.3);
+    z-index: 5;
+  }
+  .vsw__card.is-current {
+    border-color: #00ffd1;
+    box-shadow: 0 0 12px rgba(0,255,209,.3);
+  }
+  .vsw__card.is-current::after {
+    content: '';
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 6px; height: 6px;
+    background: #00ffd1;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ffd1;
+    z-index: 2;
+    animation: vswPulse 2s ease-in-out infinite;
+  }
+  @keyframes vswPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .6; transform: scale(1.4); }
+  }
+  .vsw__thumb {
+    height: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vsw__info { padding: 4px 6px 5px; }
+  .vsw__info .vsw__name {
+    font-size: 9px;
+    font-weight: 600;
+    color: #f0e9ff;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== THUMBS — NEW SITES ===== */
+  .vsw-th-y2k {
+    background: radial-gradient(circle at 30% 30%, rgba(98,0,255,.8), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,0,170,.7), transparent 50%), #0a0118;
+  }
+  .vsw-th-y2k::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 60%; height: 24%;
+    background: linear-gradient(90deg, #00ffd1, #ff00aa);
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(0,255,209,.6);
+  }
+  .vsw-th-y2k::after {
+    content: ''; position: absolute; top: 5px; left: 5px; right: 5px;
+    height: 3px; background: rgba(255,255,255,.15); border-radius: 2px;
+  }
+
+  .vsw-th-tech {
+    background: #050505;
+    background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  .vsw-th-tech::before {
+    content: 'K'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+    color: white; letter-spacing: -.04em;
+  }
+  .vsw-th-tech::after {
+    content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+    width: 30%; height: 2px; background: #fb923c; border-radius: 1px;
+  }
+
+  .vsw-th-apple {
+    background: #fbfbfd;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-apple::before {
+    content: ''; width: 50%; height: 50%;
+    background: linear-gradient(135deg, #007aff, #5856d6);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.15);
+  }
+  .vsw-th-apple::after {
+    content: ''; position: absolute; top: 5px; left: 5px;
+    width: 30%; height: 2px; background: #1d1d1f; border-radius: 1px;
+  }
+
+  .vsw-th-stripe {
+    background: linear-gradient(135deg, #635bff 0%, #00d4ff 50%, #06d6a0 100%);
+  }
+  .vsw-th-stripe::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 70%; height: 28%; background: white;
+    border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  }
+  .vsw-th-stripe::after {
+    content: ''; position: absolute; top: 5px; left: 5px;
+    width: 35%; height: 2px; background: white; border-radius: 1px; opacity: .8;
+  }
+
+  .vsw-th-kinfolk {
+    background: #f5f1ea;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 3px;
+  }
+  .vsw-th-kinfolk::before {
+    content: 'K'; font-family: 'Fraunces', Georgia, serif;
+    font-size: 24px; font-style: italic; font-weight: 300;
+    color: #c2410c; line-height: 1;
+  }
+  .vsw-th-kinfolk::after {
+    content: ''; width: 30%; height: 1px; background: #c2410c;
+  }
+
+  .vsw-th-brutalist {
+    background: #f0ee2c;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; padding: 3px;
+  }
+  .vsw-th-brutalist::before {
+    content: 'KOD'; font-family: 'Archivo Black', sans-serif;
+    font-size: 13px; color: #0a0a0a; letter-spacing: -.04em; line-height: 1;
+  }
+  .vsw-th-brutalist::after {
+    content: 'DEX'; font-family: 'Archivo Black', sans-serif;
+    font-size: 13px; background: #ff3030; color: white;
+    padding: 0 3px; letter-spacing: -.04em; line-height: 1.1;
+    transform: rotate(-3deg); margin-top: 1px;
+  }
+
+  .vsw-th-swiss {
+    background: white;
+    background-image: linear-gradient(90deg, rgba(0,0,0,.06) 1px, transparent 1px);
+    background-size: 9px 100%;
+    display: flex; align-items: flex-end; padding: 5px;
+  }
+  .vsw-th-swiss::before {
+    content: '21+'; font-family: 'Inter Tight', sans-serif;
+    font-weight: 300; font-size: 22px; color: #000;
+    letter-spacing: -.05em; line-height: .9;
+  }
+  .vsw-th-swiss::after {
+    content: ''; position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 2px; background: #ef4444;
+  }
+
+  .vsw-th-terminal { background: #0c0c0c; }
+  .vsw-th-terminal::before {
+    content: '● ● ●'; position: absolute; top: 4px; left: 5px;
+    font-size: 5px; color: #4ade80; letter-spacing: 1px;
+  }
+  .vsw-th-terminal::after {
+    content: '$ ./kx_'; position: absolute; bottom: 8px; left: 5px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 8px; color: #4ade80;
+    text-shadow: 0 0 3px rgba(74,222,128,.5);
+  }
+
+  /* ===== THUMBS — ORIGINAL VITRINES ===== */
+  .vsw-th-v1 {
+    background: #f5f1ea;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-v1::before {
+    content: 'Koddex';
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: #1a1a1a;
+    letter-spacing: -.02em;
+  }
+  .vsw-th-v1::after {
+    content: ''; position: absolute; bottom: 5px; right: 5px;
+    width: 8px; height: 8px;
+    background: #2563eb;
+    border-radius: 50%;
+  }
+
+  .vsw-th-v2 {
+    background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vsw-th-v2::before {
+    content: 'K';
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    color: white;
+    line-height: 1;
+  }
+  .vsw-th-v2::after {
+    content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+    width: 18%; height: 2px;
+    background: #fb923c;
+    border-radius: 1px;
+  }
+
+  .vsw-th-v3 {
+    background: #faf6f0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    padding: 4px;
+  }
+  .vsw-th-v3::before {
+    content: ''; background: #ff7a5c; border-radius: 3px;
+  }
+  .vsw-th-v3::after {
+    content: ''; background: #6ee7b7; border-radius: 3px;
+    grid-row: 1 / span 2;
+  }
+  .vsw-th-v3 > .v3x {
+    background: #fde68a; border-radius: 3px;
+  }
+
+  .vsw-th-v4 {
+    background: #1e1e1e;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+  }
+  .vsw-th-v4::before {
+    content: ''; height: 4px;
+    background: linear-gradient(90deg, #569cd6 30%, transparent 30%);
+    border-radius: 1px;
+  }
+  .vsw-th-v4::after {
+    content: ''; height: 4px;
+    background: linear-gradient(90deg, transparent 10%, #c586c0 10%, #c586c0 50%, transparent 50%, #ce9178 60%, #ce9178 90%, transparent 90%);
+    border-radius: 1px;
+  }
+  .vsw-th-v4 > .v4x {
+    height: 4px;
+    background: linear-gradient(90deg, #4ec9b0 25%, transparent 25%, transparent 30%, #d4d4d4 30%, #d4d4d4 32%, transparent 32%);
+    border-radius: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .vsw__panel { width: 240px; padding: 10px; }
+    .vsw__thumb { height: 40px; }
+    .vsw__peek { height: 140px; }
+    .vsw__grid { gap: 5px; }
+  }
+</style>
+
+<div class="vsw">
+  <div class="vsw__peek">
+    <span class="vsw__hint">12 versões ✦</span>
+  </div>
+  <div class="vsw__panel">
+    <div class="vsw__head">
+      <h3>switch style</h3>
+      <p>// <span>12 versões</span> · clique pra trocar</p>
+    </div>
+
+    <div class="vsw__section">// PRINCIPAL</div>
+    <div class="vsw__grid">
+      <a href="index.html" class="vsw__card" data-id="y2k">
+        <div class="vsw__thumb vsw-th-y2k"></div>
+        <div class="vsw__info"><div class="vsw__name">Y2K</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// SITES COMPLETOS · LOTE 2</div>
+    <div class="vsw__grid">
+      <a href="novo-site-brutalist.html" class="vsw__card" data-id="brutalist">
+        <div class="vsw__thumb vsw-th-brutalist"></div>
+        <div class="vsw__info"><div class="vsw__name">Brutalist</div></div>
+      </a>
+      <a href="novo-site-swiss.html" class="vsw__card" data-id="swiss">
+        <div class="vsw__thumb vsw-th-swiss"></div>
+        <div class="vsw__info"><div class="vsw__name">Swiss</div></div>
+      </a>
+      <a href="novo-site-terminal.html" class="vsw__card" data-id="terminal">
+        <div class="vsw__thumb vsw-th-terminal"></div>
+        <div class="vsw__info"><div class="vsw__name">Terminal</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// SITES COMPLETOS · LOTE 1</div>
+    <div class="vsw__grid">
+      <a href="novo-site-tech.html" class="vsw__card" data-id="tech">
+        <div class="vsw__thumb vsw-th-tech"></div>
+        <div class="vsw__info"><div class="vsw__name">Tech</div></div>
+      </a>
+      <a href="novo-site-apple.html" class="vsw__card" data-id="apple">
+        <div class="vsw__thumb vsw-th-apple"></div>
+        <div class="vsw__info"><div class="vsw__name">Apple</div></div>
+      </a>
+      <a href="novo-site-stripe.html" class="vsw__card" data-id="stripe">
+        <div class="vsw__thumb vsw-th-stripe"></div>
+        <div class="vsw__info"><div class="vsw__name">Stripe</div></div>
+      </a>
+      <a href="novo-site-kinfolk.html" class="vsw__card" data-id="kinfolk">
+        <div class="vsw__thumb vsw-th-kinfolk"></div>
+        <div class="vsw__info"><div class="vsw__name">Kinfolk</div></div>
+      </a>
+    </div>
+
+    <div class="vsw__section">// VITRINES CURTAS · ORIGINAIS</div>
+    <div class="vsw__grid">
+      <a href="koddex-v1.html" class="vsw__card" data-id="v1">
+        <div class="vsw__thumb vsw-th-v1"></div>
+        <div class="vsw__info"><div class="vsw__name">v1 · Modern</div></div>
+      </a>
+      <a href="koddex-v2.html" class="vsw__card" data-id="v2">
+        <div class="vsw__thumb vsw-th-v2"></div>
+        <div class="vsw__info"><div class="vsw__name">v2 · Editorial</div></div>
+      </a>
+      <a href="koddex-v3.html" class="vsw__card" data-id="v3">
+        <div class="vsw__thumb vsw-th-v3"><span class="v3x"></span></div>
+        <div class="vsw__info"><div class="vsw__name">v3 · Playful</div></div>
+      </a>
+      <a href="koddex-v4.html" class="vsw__card" data-id="v4">
+        <div class="vsw__thumb vsw-th-v4"><span class="v4x"></span></div>
+        <div class="vsw__info"><div class="vsw__name">v4 · IDE</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var map = {
+      'index.html': 'y2k', '': 'y2k',
+      'novo-site-tech.html': 'tech',
+      'novo-site-apple.html': 'apple',
+      'novo-site-stripe.html': 'stripe',
+      'novo-site-kinfolk.html': 'kinfolk',
+      'novo-site-brutalist.html': 'brutalist',
+      'novo-site-swiss.html': 'swiss',
+      'novo-site-y2k.html': 'y2k',
+      'novo-site-terminal.html': 'terminal',
+      'koddex-v1.html': 'v1',
+      'koddex-v2.html': 'v2',
+      'koddex-v3.html': 'v3',
+      'koddex-v4.html': 'v4'
+    };
+    var current = map[page] || 'y2k';
+    var card = document.querySelector('.vsw__card[data-id="'+current+'"]');
+    if (card) card.classList.add('is-current');
+  })();
+</script>
+<!-- ============ END VARIANT SWITCHER ============ -->
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo">
+      <span>koddex</span>
+      <span class="star">✦</span>
+    </a>
+    <div class="links">
+      <a href="#services">Services</a>
+      <a href="#portfolio">Work</a>
+      <a href="#about">Studio</a>
+      <a href="#contact" class="cta">Contact ↗</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="meta">
+        <span class="line-deco"></span>
+        <span>Software Studio</span>
+        <span>·</span>
+        <span>Est. 2026</span>
+      </div>
+      <h1 class="serif">A craft of<br><em>software.</em></h1>
+    </div>
+    <div class="hero-right">
+      <p>
+        Estúdio independente especializado em sistemas, aplicativos e sites <em>feitos à mão</em> —
+        com a precisão da engenharia e o cuidado do artesanato.
+      </p>
+      <div class="ctas">
+        <a href="#contact" class="btn btn-primary">
+          Iniciar conversa
+          <span class="arr">↗</span>
+        </a>
+        <a href="#portfolio" class="btn btn-ghost">
+          Ver trabalhos
+          <span class="arr">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Sistemas web sob medida</span><span class="sep">✦</span>
+    <span>Aplicativos &amp; SaaS</span><span class="sep">✦</span>
+    <span>Sites institucionais</span><span class="sep">✦</span>
+    <span>APIs &amp; integrações</span><span class="sep">✦</span>
+    <span>Manutenção contínua</span><span class="sep">✦</span>
+    <span>Consultoria técnica</span><span class="sep">✦</span>
+    <span>Sistemas web sob medida</span><span class="sep">✦</span>
+    <span>Aplicativos &amp; SaaS</span><span class="sep">✦</span>
+    <span>Sites institucionais</span><span class="sep">✦</span>
+    <span>APIs &amp; integrações</span><span class="sep">✦</span>
+  </div>
+</div>
+
+<!-- FACTS -->
+<section class="block" style="padding-top:80px; padding-bottom:80px;">
+  <div class="facts">
+    <div class="fact">
+      <div class="num">21</div>
+      <div class="label">Anos · Engenharia</div>
+    </div>
+    <div class="fact">
+      <div class="num">12</div>
+      <div class="label">Projetos · 2026</div>
+    </div>
+    <div class="fact">
+      <div class="num">100<span style="font-size:.6em;">%</span></div>
+      <div class="label">Sob medida</div>
+    </div>
+    <div class="fact">
+      <div class="num">24h</div>
+      <div class="label">Resposta · Briefings</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="block" id="services">
+  <div class="section-num">(01) — Serviços</div>
+  <h2 class="section-title serif">Do <em>briefing</em><br>ao <em>deploy.</em></h2>
+
+  <div class="services-list">
+    <div class="service-row">
+      <div class="service-idx mono">01 —</div>
+      <div class="service-title serif">Sistemas <em>web</em></div>
+      <div class="service-desc">Plataformas internas, ERPs, CRMs, painéis administrativos e ferramentas que automatizam a operação do negócio.</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="service-row">
+      <div class="service-idx mono">02 —</div>
+      <div class="service-title serif">Aplicativos &amp; <em>SaaS</em></div>
+      <div class="service-desc">Produtos digitais completos, do MVP ao lançamento. Arquitetura pronta pra escalar.</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="service-row">
+      <div class="service-idx mono">03 —</div>
+      <div class="service-title serif">Sites <em>institucionais</em></div>
+      <div class="service-desc">Landing pages e sites rápidos, otimizados pra SEO, com painel de edição próprio.</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="service-row">
+      <div class="service-idx mono">04 —</div>
+      <div class="service-title serif">APIs &amp; <em>integrações</em></div>
+      <div class="service-desc">Backends robustos, integrações entre sistemas, gateways de pagamento, automações sob medida.</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="service-row">
+      <div class="service-idx mono">05 —</div>
+      <div class="service-title serif">Evolução <em>contínua</em></div>
+      <div class="service-desc">Manutenção mensal, novas features, monitoramento e suporte. Seu sistema acompanha o ritmo do negócio.</div>
+      <div class="arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="block" id="portfolio">
+  <div class="section-num">(02) — Trabalhos selecionados</div>
+  <h2 class="section-title serif">Projetos <em>recentes.</em></h2>
+  <p style="color:var(--ink-2); font-size:18px; max-width:600px; margin-bottom: 60px; font-family:'Fraunces',serif; font-weight:300;">
+    Uma seleção do que entregamos nos últimos doze meses. Não é tudo — é o que melhor representa nosso trabalho.
+  </p>
+
+  <div class="portfolio-grid">
+    <a href="#" class="work work-1">
+      <div class="visual"></div>
+      <div class="meta">
+        <span>SAAS · DASHBOARD</span>
+        <span class="sep">·</span>
+        <span>2026</span>
+      </div>
+      <h3 class="serif"><em>Métrica</em> BI</h3>
+      <p>Plataforma de business intelligence com 8 fontes de dados em tempo real. Dashboards 100% customizáveis e ETL próprio.</p>
+      <div class="stack">Next.js · Postgres · Redis · Recharts</div>
+    </a>
+
+    <a href="#" class="work work-2">
+      <div class="visual"></div>
+      <div class="meta">
+        <span>ERP · LOGÍSTICA</span>
+        <span class="sep">·</span>
+        <span>2025</span>
+      </div>
+      <h3 class="serif">Frota<em>Cloud</em></h3>
+      <p>Sistema de gestão de frota com 340+ veículos rastreados. Roteirização inteligente e relatórios automatizados B2B.</p>
+      <div class="stack">React · Node · MongoDB · Mapbox</div>
+    </a>
+
+    <a href="#" class="work work-3">
+      <div class="visual"></div>
+      <div class="meta">
+        <span>APP · SAÚDE</span>
+        <span class="sep">·</span>
+        <span>2025</span>
+      </div>
+      <h3 class="serif">Clinik <em>Pro</em></h3>
+      <p>Plataforma para gestão de consultórios médicos. Agenda, prontuário eletrônico, prescrições e financeiro integrados.</p>
+      <div class="stack">React Native · Supabase · Stripe</div>
+    </a>
+
+    <a href="#" class="work work-4">
+      <div class="visual">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="meta">
+        <span>API · E-COMMERCE</span>
+        <span class="sep">·</span>
+        <span>2025</span>
+      </div>
+      <h3 class="serif"><em>Sync</em> Commerce</h3>
+      <p>Middleware de integração que sincroniza estoque, pedidos e financeiro de 6 lojas entre Shopify, Mercado Livre e ERP TOTVS.</p>
+      <div class="stack">Node.js · RabbitMQ · Postgres</div>
+    </a>
+  </div>
+</section>
+
+<!-- MANIFESTO QUOTE -->
+<section class="block">
+  <div class="manifesto">
+    <div class="section-num" style="justify-content:center;">(03) — Filosofia</div>
+    <p class="manifesto-body serif">
+      <span class="dim">"</span>Software é <em>artesanato</em><br>
+      disfarçado de <em>engenharia.</em><br>
+      <span class="dim">A diferença entre um sistema</span><br>
+      <span class="dim">que dura e um que quebra está</span><br>
+      nos <em>detalhes</em> que <span class="dim">ninguém vê.</span><span class="dim">"</span>
+    </p>
+    <div class="manifesto-attr">— Princípio fundador · Koddex</div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="block">
+  <div class="section-num">(04) — Processo</div>
+  <h2 class="section-title serif">Quatro <em>tempos</em>,<br>um <em>método</em>.</h2>
+
+  <div class="process">
+    <div class="step">
+      <div>
+        <div class="step-num serif">01</div>
+        <div class="step-label">Discovery</div>
+      </div>
+      <div>
+        <h4 class="serif">Conversa inicial</h4>
+        <p>Entendemos o problema, mapeamos escopo e definimos prazo realista. Sem compromisso.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <div class="step-num serif">02</div>
+        <div class="step-label">Prototype</div>
+      </div>
+      <div>
+        <h4 class="serif">Validação visual</h4>
+        <p>Wireframes navegáveis no Figma. Você valida o fluxo completo antes do primeiro commit.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <div class="step-num serif">03</div>
+        <div class="step-label">Build</div>
+      </div>
+      <div>
+        <h4 class="serif">Construção</h4>
+        <p>Desenvolvimento iterativo com entregas semanais. Ambiente de homologação acessível 24/7.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <div class="step-num serif">04</div>
+        <div class="step-label">Launch</div>
+      </div>
+      <div>
+        <h4 class="serif">Deploy &amp; evolução</h4>
+        <p>Publicação, documentação, treinamento e plano claro pros próximos ciclos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="block" id="about">
+  <div class="section-num">(05) — Sobre o estúdio</div>
+  <div class="about-grid">
+    <div class="about-image"></div>
+    <div class="about-text">
+      <h2 class="serif">Estúdio <em>pequeno,</em><br>atenção <em>grande.</em></h2>
+      <p>
+        A Koddex é um estúdio independente focado em <em>qualidade acima de volume.</em>
+        Poucos projetos por vez, envolvimento direto, resultado mensurável.
+      </p>
+      <p>
+        Mais de duas décadas de formação em engenharia de software combinadas com o que há
+        de mais atual em stacks modernas. Você fala com <em>quem constrói</em> — sem gerente,
+        sem terceirização.
+      </p>
+
+      <div class="about-points">
+        <div class="about-point">
+          <div class="num serif">01</div>
+          <div class="text">
+            <strong>Atendimento direto</strong>
+            <span>Sem PM, sem account manager. Você fala comigo.</span>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="num serif">02</div>
+          <div class="text">
+            <strong>Código transparente</strong>
+            <span>Tudo versionado no seu GitHub desde o primeiro commit.</span>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="num serif">03</div>
+          <div class="text">
+            <strong>Stack moderna comprovada</strong>
+            <span>React, Next, Node, Python, Postgres. Sem framework exótico.</span>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="num serif">04</div>
+          <div class="text">
+            <strong>Sem amarra contratual longa</strong>
+            <span>Projeto fechado por escopo. Manutenção opcional.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="block">
+  <div class="testimonial">
+    <span class="quote-mark serif">"</span>
+    <blockquote class="serif">
+      Em <em>seis semanas</em> a Koddex entregou um sistema que duas empresas grandes não conseguiram em <em>oito meses</em>. Velocidade absurda e código limpo de quem realmente sabe o que está fazendo.
+    </blockquote>
+    <div class="author">
+      <div class="avatar serif">R</div>
+      <div class="author-info">
+        <div class="name">Ricardo Mendes</div>
+        <div class="role">CTO · Logística B2B</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-block" id="contact">
+  <div>
+    <h2 class="serif">Tem uma<br><em>ideia?</em></h2>
+  </div>
+  <div class="cta-right">
+    <p>
+      Me conta o problema que estamos juntos pra encontrar a solução. Resposta em até 24h úteis com uma primeira avaliação gratuita.
+    </p>
+    <div class="ctas">
+      <a href="mailto:ola@koddex.com.br" class="btn btn-primary">
+        Enviar briefing
+        <span class="arr">↗</span>
+      </a>
+      <a href="https://wa.me/5518991979766" class="btn btn-ghost">
+        WhatsApp
+        <span class="arr">↗</span>
+      </a>
+    </div>
+    <div class="contact-list">
+      <div class="row">
+        <span class="k">E-mail</span>
+        <span class="v"><a href="mailto:ola@koddex.com.br">ola@koddex.com.br</a></span>
+      </div>
+      <div class="row">
+        <span class="k">WhatsApp</span>
+        <span class="v"><a href="https://wa.me/5518991979766">+55 18 99197-9766</a></span>
+      </div>
+      <div class="row">
+        <span class="k">Localização</span>
+        <span class="v">Presidente Prudente · SP · Brasil</span>
+      </div>
+      <div class="row">
+        <span class="k">Horário</span>
+        <span class="v">Seg—Sex · 9h—19h (BRT)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <div class="logo">koddex <span class="star">✦</span></div>
+      <p>Software studio independente. Sistemas, apps e sites feitos à mão, com cuidado.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Studio</h5>
+      <a href="#about">Sobre</a>
+      <a href="#portfolio">Trabalhos</a>
+      <a href="#services">Serviços</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a href="mailto:ola@koddex.com.br">ola@koddex.com.br</a>
+      <a href="https://wa.me/5518991979766">WhatsApp</a>
+      <a href="#">LinkedIn</a>
+    </div>
+    <div class="footer-col">
+      <h5>Local</h5>
+      <a href="#">Presidente Prudente</a>
+      <a href="#">São Paulo · BR</a>
+      <a href="#">Atendimento remoto</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Koddex · All rights reserved</span>
+    <span>v.2026.01 · Crafted in Brazil</span>
+  </div>
+</footer>
+
+</body>
+</html>
