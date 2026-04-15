@@ -669,14 +669,15 @@
     pointer-events: auto;
   }
   .vsw:hover .vsw__hint { animation: none; opacity: 0; }
-  .vsw::after {
+  /* Bridge entre peek e painel (não cobre cards) */
+  .vsw__peek::after {
     content: '';
     position: absolute;
-    left: 14px; top: -50px; bottom: -50px;
-    width: 280px;
-    pointer-events: none;
+    top: -20px; bottom: -20px;
+    left: 100%;
+    width: 12px;
+    pointer-events: auto;
   }
-  .vsw:hover::after { pointer-events: auto; }
 
   .vsw__head {
     margin-bottom: 12px;
