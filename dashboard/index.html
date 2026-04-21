@@ -87,32 +87,27 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
 
 /* BOOK */
 .bk-tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
-.bk-pg{display:flex;gap:4px;align-items:center;margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
-.bk-pg button{background:var(--bg3);border:1px solid var(--ln2);color:var(--ink2);border-radius:6px;padding:6px 10px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .15s}
-.bk-pg button:hover{background:var(--bg4);color:var(--ink)}.bk-pg button:disabled{opacity:.3;cursor:not-allowed}
-.bk-pg .pi{padding:0 8px}
-.bk-p{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;min-height:500px}
-.bk-ph{padding:16px 20px;border-bottom:1px solid var(--ln);display:flex;align-items:center}
-.bk-ph input{background:none;border:none;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;outline:none;flex:1}
-.bk-ph input::placeholder{color:var(--faint)}
-.bk-pb{padding:20px;min-height:400px}
-.bi-list{display:flex;flex-direction:column;gap:12px;min-height:200px}
-.bi{background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:14px;position:relative;transition:all .15s;cursor:grab}
-.bi:active{cursor:grabbing}.bi:hover{border-color:var(--ln2)}
-.bi .drag{position:absolute;top:50%;left:6px;transform:translateY(-50%);color:var(--faint);font-size:12px;cursor:grab;opacity:0;transition:opacity .15s}
-.bi:hover .drag{opacity:1}
-.bi .ct{padding-left:16px}
-.bi .del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--faint);cursor:pointer;font-size:13px;opacity:0;transition:all .15s;padding:4px;border-radius:4px}
-.bi:hover .del{opacity:1}.bi .del:hover{color:var(--red);background:rgba(248,113,113,.1)}
-.bi.text .txt{font-size:14px;color:var(--ink2);line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.bi.image img{max-width:100%;border-radius:8px;display:block}
-.bi.image .cap{font-size:12px;color:var(--dim);margin-top:8px;font-style:italic}
+.bk-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.bk-card{background:var(--bg2);border:1px solid var(--ln);border-radius:12px;overflow:hidden;transition:all .2s;position:relative}
+.bk-card:hover{border-color:var(--ln2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.bk-card .preview{height:130px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center}
+.bk-card .preview img{width:100%;height:100%;object-fit:cover}
+.bk-card .preview .txt-prev{padding:12px;font-size:11px;color:var(--ink2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
+.bk-card .card-info{padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.bk-card .card-type{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint)}
+.bk-card .card-acts{display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.bk-card:hover .card-acts{opacity:1}
+.bk-card .card-acts button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:all .12s}
+.bk-card .card-acts button:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.bk-card .card-acts .dl:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.bk-pag{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
+.bk-pag button{background:var(--bg3);border:1px solid var(--ln2);color:var(--ink2);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .15s}
+.bk-pag button:hover{background:var(--bg4);color:var(--ink)}.bk-pag button:disabled{opacity:.3;cursor:not-allowed}
 .dz{border:2px dashed var(--ln2);border-radius:12px;padding:40px 20px;text-align:center;color:var(--faint);transition:all .25s;cursor:pointer;margin-top:12px}
 .dz:hover,.dz.over{border-color:var(--neon);background:rgba(0,255,209,.04);color:var(--neon)}
 .dz .di{font-size:32px;margin-bottom:8px;display:block}.dz .dt{font-size:13px;margin-bottom:4px}
 .dz .dh{font-size:11px;font-family:'JetBrains Mono',monospace;opacity:.6}
 .dz input[type="file"]{display:none}
-.dragging{opacity:.4;transform:scale(.98)}
 
 /* CATS */
 .cats-gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:20px}
@@ -121,8 +116,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
 .cc .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .cc .nm{font-size:14px;font-weight:600;flex:1}
 .cc .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
-.cc .acts button{background:none;border:none;color:var(--faint);cursor:pointer;font-size:13px;padding:2px;border-radius:4px}
-.cc .acts button:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.cc .acts{display:flex;gap:4px}
+.cc .acts button{background:none;border:none;color:var(--faint);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:all .12s}
+.cc .acts button:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.cc .acts .dl:hover{color:var(--red)!important;background:rgba(248,113,113,.1)!important}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--bg3);border:1px solid var(--ln2);border-radius:10px;padding:12px 20px;font-size:13px;color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s}
@@ -179,28 +176,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
     <!-- BOOK -->
     <div class="pg" id="pg-book">
       <div class="bk-tb">
-        <button class="bt pr" onclick="addPage()">+ Nova Página</button>
-        <button class="bt dg" onclick="delPage()">🗑️ Excluir Página</button>
-        <div class="bk-pg">
-          <button onclick="pgPrev()">←</button>
-          <span class="pi" id="bkPI">1/1</span>
-          <button onclick="pgNext()">→</button>
-        </div>
+        <button class="bt pr" onclick="openBookM()">+ Novo Item</button>
+        <button class="bt" onclick="addText()">📝 Texto</button>
       </div>
-      <div class="bk-p">
-        <div class="bk-ph"><input type="text" id="bkTitle" placeholder="Título da página..." onblur="saveTitle()"></div>
-        <div class="bk-pb">
-          <div class="bi-list" id="biList"><div class="loading"><span class="spin"></span>Carregando...</div></div>
-          <div class="dz" id="dropZ">
-            <span class="di">📎</span>
-            <div class="dt">Arraste imagens, textos ou arquivos aqui</div>
-            <div class="dh">ou clique para selecionar · cole com Ctrl+V</div>
-            <input type="file" id="fIn" accept="image/*" multiple>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="bt" onclick="addText()">📝 Adicionar texto</button>
-          </div>
-        </div>
+      <div class="bk-cards" id="bkCards"><div class="loading"><span class="spin"></span>Carregando...</div></div>
+      <div class="bk-pag" id="bkPag"></div>
+      <div class="dz" id="dropZ">
+        <span class="di">📎</span>
+        <div class="dt">Arraste imagens, textos ou arquivos aqui</div>
+        <div class="dh">ou clique para selecionar · cole com Ctrl+V</div>
+        <input type="file" id="fIn" accept="image/*" multiple>
       </div>
     </div>
 
@@ -209,6 +194,23 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
       <button class="bt pr" onclick="openCatM()">+ Nova Categoria</button>
       <div class="cats-gr" id="catsGr"><div class="loading"><span class="spin"></span>Carregando...</div></div>
     </div>
+
+<!-- BOOK ITEM MODAL -->
+<div class="mo" id="bkMo">
+  <div class="md">
+    <div class="md-h"><h3 id="bkMoT">Novo Item</h3><button class="md-x" onclick="closeBookM()">✕</button></div>
+    <div class="md-b">
+      <input type="hidden" id="bkEd">
+      <div class="ff"><label>// tipo</label><select id="bkType" onchange="toggleBookFields()">
+        <option value="text">Texto</option><option value="image">Imagem (URL)</option>
+      </select></div>
+      <div class="ff" id="bkTxtF"><label>// conteúdo</label><textarea id="bkContent" placeholder="Digite ou cole o texto..."></textarea></div>
+      <div class="ff" id="bkImgF" style="display:none"><label>// url da imagem</label><input type="url" id="bkImgUrl" placeholder="https://..."></div>
+      <div class="ff" id="bkCapF" style="display:none"><label>// legenda (opcional)</label><input type="text" id="bkCaption" placeholder="Legenda da imagem"></div>
+    </div>
+    <div class="md-f"><button class="bt" onclick="closeBookM()">Cancelar</button><button class="bt pr" onclick="saveBookItem()">Salvar</button></div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -230,8 +232,9 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
 <!-- CAT MODAL -->
 <div class="mo" id="ctMo">
   <div class="md">
-    <div class="md-h"><h3>Nova Categoria</h3><button class="md-x" onclick="closeCtM()">✕</button></div>
+    <div class="md-h"><h3 id="ctMoT">Nova Categoria</h3><button class="md-x" onclick="closeCtM()">✕</button></div>
     <div class="md-b">
+      <input type="hidden" id="ctEd">
       <div class="ff"><label>// nome</label><input type="text" id="ctNm" placeholder="Ex: Inteligência Artificial"></div>
       <div class="ff"><label>// cor</label><select id="ctCl">
         <option value="neon">Verde Neon</option><option value="purple">Roxo</option><option value="cyan">Ciano</option>
@@ -250,20 +253,16 @@ const SB_URL='https://czfdzktacikuyfjcytrx.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6ZmR6a3RhY2lrdXlmamN5dHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDEwNDMsImV4cCI6MjA5MjM3NzA0M30.lqarEQivfoHwCElWYFWivrIyZEmhUbU6OMRMYXTnLfQ';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-// Auth check
 sb.auth.getSession().then(({data})=>{
   if(!data.session) location.href='../admin/';
   else init();
 });
 
-async function logout(){
-  await sb.auth.signOut();
-  location.href='../admin/';
-}
+async function logout(){await sb.auth.signOut();location.href='../admin/'}
 
 // ============ STATE ============
-let cats=[], links=[], pages=[], items=[], pgIdx=0, filter='all';
-
+let cats=[],links=[],bookItems=[],bkPage=0,filter='all';
+const BK_PER_PAGE=12;
 const COLORS={neon:'#00ffd1',purple:'#a78bfa',cyan:'#67e8f9',yellow:'#fbbf24',pink:'#f0abfc',orange:'#fb923c',red:'#f87171'};
 
 function toast(msg,ok=true){
@@ -277,7 +276,7 @@ function esc(s){const d=document.createElement('div');d.textContent=s||'';return
 async function init(){
   await loadCats();
   await loadLinks();
-  await loadPages();
+  await loadBookItems();
   renderLinks();
 }
 
@@ -294,7 +293,7 @@ function go(p){
   if(p==='cats')renderCats();
 }
 
-// ============ CATEGORIES ============
+// ============ CATEGORIES (CRUD) ============
 async function loadCats(){
   const{data}=await sb.from('categories').select('*').order('sort_order');
   cats=data||[];
@@ -313,22 +312,47 @@ function setFilter(id){filter=id;renderLinks()}
 
 function renderCats(){
   const counts={};links.forEach(l=>{if(l.category_id)counts[l.category_id]=(counts[l.category_id]||0)+1});
-  if(!cats.length){document.getElementById('catsGr').innerHTML='<div class="empty"><span class="ei">🏷️</span><p>Nenhuma categoria</p></div>';return}
+  if(!cats.length){document.getElementById('catsGr').innerHTML='<div class="empty"><span class="ei">🏷️</span><p>Nenhuma categoria</p><button class="bt pr" onclick="openCatM()">+ Criar primeira</button></div>';return}
   document.getElementById('catsGr').innerHTML=cats.map(c=>
-    '<div class="cc"><span class="dot" style="background:'+(COLORS[c.color]||'#888')+'"></span><span class="nm">'+esc(c.name)+'</span><span class="cnt">'+(counts[c.id]||0)+' links</span><div class="acts"><button onclick="delCat(\''+c.id+'\')" title="Excluir">🗑️</button></div></div>'
+    '<div class="cc"><span class="dot" style="background:'+(COLORS[c.color]||'#888')+'"></span><span class="nm">'+esc(c.name)+'</span><span class="cnt">'+(counts[c.id]||0)+' links</span><div class="acts"><button onclick="editCat(\''+c.id+'\')" title="Editar">✏️</button><button class="dl" onclick="delCat(\''+c.id+'\')" title="Excluir">🗑️</button></div></div>'
   ).join('');
 }
 
-function openCatM(){document.getElementById('ctNm').value='';document.getElementById('ctMo').classList.add('show');setTimeout(()=>document.getElementById('ctNm').focus(),100)}
+function openCatM(){
+  document.getElementById('ctEd').value='';
+  document.getElementById('ctNm').value='';
+  document.getElementById('ctCl').value='neon';
+  document.getElementById('ctMoT').textContent='Nova Categoria';
+  document.getElementById('ctMo').classList.add('show');
+  setTimeout(()=>document.getElementById('ctNm').focus(),100);
+}
+
+function editCat(id){
+  const c=cats.find(x=>x.id===id);if(!c)return;
+  document.getElementById('ctEd').value=c.id;
+  document.getElementById('ctNm').value=c.name;
+  document.getElementById('ctCl').value=c.color;
+  document.getElementById('ctMoT').textContent='Editar Categoria';
+  document.getElementById('ctMo').classList.add('show');
+  setTimeout(()=>document.getElementById('ctNm').focus(),100);
+}
+
 function closeCtM(){document.getElementById('ctMo').classList.remove('show')}
 
 async function saveCat(){
+  const eid=document.getElementById('ctEd').value;
   const name=document.getElementById('ctNm').value.trim();
   const color=document.getElementById('ctCl').value;
   if(!name)return;
-  const{error}=await sb.from('categories').insert({name,color,sort_order:cats.length+1});
-  if(error){toast('Erro ao salvar',false);return}
-  await loadCats();closeCtM();renderCats();renderLinks();toast('Categoria criada');
+  if(eid){
+    await sb.from('categories').update({name,color}).eq('id',eid);
+    toast('Categoria atualizada');
+  }else{
+    const{error}=await sb.from('categories').insert({name,color,sort_order:cats.length+1});
+    if(error){toast('Erro ao salvar',false);return}
+    toast('Categoria criada');
+  }
+  await loadCats();closeCtM();renderCats();renderLinks();
 }
 
 async function delCat(id){
@@ -337,7 +361,7 @@ async function delCat(id){
   await loadCats();renderCats();renderLinks();toast('Categoria excluída');
 }
 
-// ============ LINKS ============
+// ============ LINKS (CRUD) ============
 async function loadLinks(){
   const{data}=await sb.from('links').select('*').order('created_at',{ascending:false});
   links=data||[];
@@ -408,97 +432,156 @@ async function delLk(id){
   await loadLinks();renderLinks();toast('Link excluído');
 }
 
-// ============ BOOK ============
-async function loadPages(){
-  const{data}=await sb.from('book_pages').select('*').order('page_number');
-  pages=data||[];
-  if(!pages.length){
-    const{data:np}=await sb.from('book_pages').insert({title:'Primeira página',page_number:1}).select();
-    pages=np||[];
+// ============ BOOK (CRUD + Cards + Pagination) ============
+async function loadBookItems(){
+  const{data}=await sb.from('book_items').select('*').order('sort_order');
+  bookItems=data||[];
+  document.getElementById('bkCnt').textContent=bookItems.length;
+}
+
+function renderBook(){
+  const total=bookItems.length;
+  const totalPages=Math.max(1,Math.ceil(total/BK_PER_PAGE));
+  if(bkPage>=totalPages)bkPage=totalPages-1;
+  if(bkPage<0)bkPage=0;
+  const start=bkPage*BK_PER_PAGE;
+  const pageItems=bookItems.slice(start,start+BK_PER_PAGE);
+
+  if(!total){
+    document.getElementById('bkCards').innerHTML='<div class="empty" style="grid-column:1/-1"><span class="ei">📖</span><p>Nenhum item no book</p><p style="font-size:12px;color:var(--faint)">Arraste, cole ou adicione conteúdo abaixo</p></div>';
+    document.getElementById('bkPag').innerHTML='';
+    return;
   }
-  document.getElementById('bkCnt').textContent=pages.length;
-  pgIdx=0;
-}
 
-async function loadItems(pageId){
-  const{data}=await sb.from('book_items').select('*').eq('page_id',pageId).order('sort_order');
-  items=data||[];
-}
-
-async function renderBook(){
-  if(!pages.length)return;
-  if(pgIdx>=pages.length)pgIdx=pages.length-1;
-  if(pgIdx<0)pgIdx=0;
-  const pg=pages[pgIdx];
-  document.getElementById('bkTitle').value=pg.title||'';
-  document.getElementById('bkPI').textContent=(pgIdx+1)+' / '+pages.length;
-  document.getElementById('biList').innerHTML='<div class="loading"><span class="spin"></span>Carregando...</div>';
-  await loadItems(pg.id);
-  if(!items.length){
-    document.getElementById('biList').innerHTML='<div class="empty" style="padding:30px"><span class="ei">📎</span><p>Página vazia — arraste algo aqui</p></div>';
-  }else{
-    document.getElementById('biList').innerHTML=items.map((it,i)=>{
-      if(it.type==='text'){
-        return '<div class="bi text" draggable="true" data-id="'+it.id+'" data-idx="'+i+'"><span class="drag">⠿</span><button class="del" onclick="delItem(\''+it.id+'\')">✕</button><div class="ct"><div class="txt" contenteditable="true" onblur="updateText(\''+it.id+'\',this)">'+esc(it.content)+'</div></div></div>';
-      }else{
-        return '<div class="bi image" draggable="true" data-id="'+it.id+'" data-idx="'+i+'"><span class="drag">⠿</span><button class="del" onclick="delItem(\''+it.id+'\')">✕</button><div class="ct"><img src="'+it.image_url+'" alt=""><div class="cap">'+esc(it.caption||'')+'</div></div></div>';
-      }
-    }).join('');
-    initDrag();
-  }
-}
-
-async function addPage(){
-  const num=pages.length+1;
-  await sb.from('book_pages').insert({title:'',page_number:num});
-  await loadPages();pgIdx=pages.length-1;renderBook();toast('Página criada');
-}
-
-async function delPage(){
-  if(pages.length<=1)return alert('Não é possível excluir a última página.');
-  if(!confirm('Excluir esta página e todo seu conteúdo?'))return;
-  const pg=pages[pgIdx];
-  // Delete items and images from storage
-  for(const it of items){
-    if(it.type==='image'&&it.image_url&&it.image_url.includes('book-images')){
-      const path=it.image_url.split('/book-images/')[1];
-      if(path)await sb.storage.from('book-images').remove([path]);
+  document.getElementById('bkCards').innerHTML=pageItems.map((it,i)=>{
+    const globalIdx=start+i;
+    const isFirst=globalIdx===0;
+    const isLast=globalIdx===total-1;
+    let preview='';
+    if(it.type==='image'){
+      preview='<div class="preview"><img src="'+it.image_url+'" alt=""></div>';
+    }else{
+      preview='<div class="preview"><div class="txt-prev">'+esc(it.content||'')+'</div></div>';
     }
+    return '<div class="bk-card">'+preview+
+      '<div class="card-info"><span class="card-type">'+(it.type==='image'?'📷 imagem':'📝 texto')+'</span>'+
+      '<div class="card-acts">'+
+      '<button onclick="moveItem(\''+it.id+'\',-1)" title="Mover para trás"'+(isFirst?' disabled':'')+'>◀</button>'+
+      '<button onclick="moveItem(\''+it.id+'\',1)" title="Mover para frente"'+(isLast?' disabled':'')+'>▶</button>'+
+      '<button onclick="editBookItem(\''+it.id+'\')" title="Editar">✏️</button>'+
+      '<button class="dl" onclick="delItem(\''+it.id+'\')" title="Excluir">🗑️</button>'+
+      '</div></div></div>';
+  }).join('');
+
+  // Pagination
+  if(totalPages>1){
+    document.getElementById('bkPag').innerHTML=
+      '<button onclick="bkPageGo(-1)"'+(bkPage===0?' disabled':'')+'>← Anterior</button>'+
+      '<span>'+(bkPage+1)+' / '+totalPages+'</span>'+
+      '<button onclick="bkPageGo(1)"'+(bkPage>=totalPages-1?' disabled':'')+'>Próxima →</button>';
+  }else{
+    document.getElementById('bkPag').innerHTML='';
   }
-  await sb.from('book_pages').delete().eq('id',pg.id);
-  await loadPages();renderBook();toast('Página excluída');
 }
 
-function pgPrev(){if(pgIdx>0){pgIdx--;renderBook()}}
-function pgNext(){if(pgIdx<pages.length-1){pgIdx++;renderBook()}}
+function bkPageGo(dir){bkPage+=dir;renderBook()}
 
-async function saveTitle(){
-  const pg=pages[pgIdx];if(!pg)return;
-  const title=document.getElementById('bkTitle').value;
-  await sb.from('book_pages').update({title}).eq('id',pg.id);
-  pages[pgIdx].title=title;
+async function moveItem(id,dir){
+  const idx=bookItems.findIndex(x=>x.id===id);
+  if(idx<0)return;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=bookItems.length)return;
+  // Swap sort_order
+  const a=bookItems[idx],b=bookItems[newIdx];
+  const tmpOrder=a.sort_order;
+  await sb.from('book_items').update({sort_order:b.sort_order}).eq('id',a.id);
+  await sb.from('book_items').update({sort_order:tmpOrder}).eq('id',b.id);
+  await loadBookItems();renderBook();
+}
+
+// Book Modal (CRUD)
+function toggleBookFields(){
+  const t=document.getElementById('bkType').value;
+  document.getElementById('bkTxtF').style.display=t==='text'?'block':'none';
+  document.getElementById('bkImgF').style.display=t==='image'?'block':'none';
+  document.getElementById('bkCapF').style.display=t==='image'?'block':'none';
+}
+
+function openBookM(){
+  document.getElementById('bkEd').value='';
+  document.getElementById('bkType').value='text';
+  document.getElementById('bkContent').value='';
+  document.getElementById('bkImgUrl').value='';
+  document.getElementById('bkCaption').value='';
+  document.getElementById('bkMoT').textContent='Novo Item';
+  toggleBookFields();
+  document.getElementById('bkMo').classList.add('show');
+}
+
+function editBookItem(id){
+  const it=bookItems.find(x=>x.id===id);if(!it)return;
+  document.getElementById('bkEd').value=it.id;
+  document.getElementById('bkType').value=it.type;
+  if(it.type==='text'){
+    document.getElementById('bkContent').value=it.content||'';
+  }else{
+    document.getElementById('bkImgUrl').value=it.image_url||'';
+    document.getElementById('bkCaption').value=it.caption||'';
+  }
+  document.getElementById('bkMoT').textContent='Editar Item';
+  toggleBookFields();
+  document.getElementById('bkMo').classList.add('show');
+}
+
+function closeBookM(){document.getElementById('bkMo').classList.remove('show')}
+
+async function saveBookItem(){
+  const eid=document.getElementById('bkEd').value;
+  const type=document.getElementById('bkType').value;
+  if(eid){
+    if(type==='text'){
+      const content=document.getElementById('bkContent').value.trim();
+      if(!content)return;
+      await sb.from('book_items').update({content,type}).eq('id',eid);
+    }else{
+      const image_url=document.getElementById('bkImgUrl').value.trim();
+      const caption=document.getElementById('bkCaption').value.trim()||null;
+      if(!image_url)return;
+      await sb.from('book_items').update({image_url,caption,type}).eq('id',eid);
+    }
+    toast('Item atualizado');
+  }else{
+    if(type==='text'){
+      const content=document.getElementById('bkContent').value.trim();
+      if(!content)return;
+      await sb.from('book_items').insert({type:'text',content,sort_order:bookItems.length});
+    }else{
+      const image_url=document.getElementById('bkImgUrl').value.trim();
+      const caption=document.getElementById('bkCaption').value.trim()||null;
+      if(!image_url)return;
+      await sb.from('book_items').insert({type:'image',image_url,caption,sort_order:bookItems.length});
+    }
+    toast('Item adicionado');
+  }
+  await loadBookItems();closeBookM();renderBook();
 }
 
 async function addText(){
   const text=prompt('Cole ou digite o texto:');
   if(!text)return;
-  const pg=pages[pgIdx];
-  await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
-  await renderBook();toast('Texto adicionado');
-}
-
-async function updateText(id,el){
-  await sb.from('book_items').update({content:el.innerText}).eq('id',id);
+  await sb.from('book_items').insert({type:'text',content:text,sort_order:bookItems.length});
+  await loadBookItems();renderBook();toast('Texto adicionado');
 }
 
 async function delItem(id){
-  const it=items.find(x=>x.id===id);
+  if(!confirm('Excluir este item?'))return;
+  const it=bookItems.find(x=>x.id===id);
   if(it&&it.type==='image'&&it.image_url&&it.image_url.includes('book-images')){
     const path=it.image_url.split('/book-images/')[1];
     if(path)await sb.storage.from('book-images').remove([path]);
   }
   await sb.from('book_items').delete().eq('id',id);
-  await renderBook();toast('Item excluído');
+  await loadBookItems();renderBook();toast('Item excluído');
 }
 
 async function uploadImage(file){
@@ -513,36 +596,8 @@ async function uploadImage(file){
 async function addImageItem(file){
   const url=await uploadImage(file);
   if(!url)return;
-  const pg=pages[pgIdx];
-  await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:url,sort_order:items.length});
-  await renderBook();toast('Imagem adicionada');
-}
-
-// Drag & drop for reorder
-function initDrag(){
-  const container=document.getElementById('biList');
-  const els=container.querySelectorAll('.bi');
-  els.forEach(el=>{
-    el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',el.dataset.id);el.classList.add('dragging')});
-    el.addEventListener('dragend',()=>{el.classList.remove('dragging');saveOrder()});
-    el.addEventListener('dragover',e=>{
-      e.preventDefault();
-      const dragging=container.querySelector('.dragging');
-      if(dragging&&dragging!==el){
-        const rect=el.getBoundingClientRect();
-        const y=e.clientY-rect.top;
-        if(y<rect.height/2)container.insertBefore(dragging,el);
-        else container.insertBefore(dragging,el.nextSibling);
-      }
-    });
-  });
-}
-
-async function saveOrder(){
-  const els=[...document.querySelectorAll('#biList .bi')];
-  for(let i=0;i<els.length;i++){
-    await sb.from('book_items').update({sort_order:i}).eq('id',els[i].dataset.id);
-  }
+  await sb.from('book_items').insert({type:'image',image_url:url,sort_order:bookItems.length});
+  await loadBookItems();renderBook();toast('Imagem adicionada');
 }
 
 // Drop zone
@@ -559,13 +614,11 @@ dz.addEventListener('drop',async e=>{
   const text=e.dataTransfer.getData('text/plain');
   if(text){
     if(/\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(text)){
-      const pg=pages[pgIdx];
-      await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:text,sort_order:items.length});
-      await renderBook();toast('Imagem adicionada');
+      await sb.from('book_items').insert({type:'image',image_url:text,sort_order:bookItems.length});
+      await loadBookItems();renderBook();toast('Imagem adicionada');
     }else{
-      const pg=pages[pgIdx];
-      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
-      await renderBook();toast('Texto adicionado');
+      await sb.from('book_items').insert({type:'text',content:text,sort_order:bookItems.length});
+      await loadBookItems();renderBook();toast('Texto adicionado');
     }
     return;
   }
@@ -574,15 +627,13 @@ dz.addEventListener('drop',async e=>{
     const tmp=document.createElement('div');tmp.innerHTML=html;
     const img=tmp.querySelector('img');
     if(img&&img.src){
-      const pg=pages[pgIdx];
-      await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:img.src,sort_order:items.length});
-      await renderBook();toast('Imagem adicionada');return;
+      await sb.from('book_items').insert({type:'image',image_url:img.src,sort_order:bookItems.length});
+      await loadBookItems();renderBook();toast('Imagem adicionada');return;
     }
     const txt=tmp.textContent.trim();
     if(txt){
-      const pg=pages[pgIdx];
-      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:txt,sort_order:items.length});
-      await renderBook();toast('Texto adicionado');
+      await sb.from('book_items').insert({type:'text',content:txt,sort_order:bookItems.length});
+      await loadBookItems();renderBook();toast('Texto adicionado');
     }
   }
 });
@@ -604,9 +655,8 @@ document.addEventListener('paste',async e=>{
   if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'&&!document.activeElement.isContentEditable){
     const text=e.clipboardData.getData('text/plain');
     if(text){
-      const pg=pages[pgIdx];
-      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
-      await renderBook();toast('Texto colado');
+      await sb.from('book_items').insert({type:'text',content:text,sort_order:bookItems.length});
+      await loadBookItems();renderBook();toast('Texto colado');
       e.preventDefault();
     }
   }
