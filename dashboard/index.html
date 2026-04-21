@@ -103,6 +103,21 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
 .bk-pag{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
 .bk-pag button{background:var(--bg3);border:1px solid var(--ln2);color:var(--ink2);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .15s}
 .bk-pag button:hover{background:var(--bg4);color:var(--ink)}.bk-pag button:disabled{opacity:.3;cursor:not-allowed}
+
+/* LIGHTBOX */
+.lb{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:40px}
+.lb.show{display:flex}
+.lb img{max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6);object-fit:contain;animation:lbIn .2s ease}
+@keyframes lbIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.lb .lb-close{position:absolute;top:20px;right:24px;background:none;border:none;color:white;font-size:28px;cursor:pointer;opacity:.6;transition:opacity .15s;z-index:2}
+.lb .lb-close:hover{opacity:1}
+.lb .lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:white;font-size:24px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:all .15s}
+.lb .lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb .lb-prev{left:20px}
+.lb .lb-next{right:20px}
+.lb .lb-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.5)}
+.bk-card .preview{cursor:pointer}
+
 .dz{border:2px dashed var(--ln2);border-radius:12px;padding:40px 20px;text-align:center;color:var(--faint);transition:all .25s;cursor:pointer;margin-top:12px}
 .dz:hover,.dz.over{border-color:var(--neon);background:rgba(0,255,209,.04);color:var(--neon)}
 .dz .di{font-size:32px;margin-bottom:8px;display:block}.dz .dt{font-size:13px;margin-bottom:4px}
@@ -243,6 +258,15 @@ body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-seri
     </div>
     <div class="md-f"><button class="bt" onclick="closeCtM()">Cancelar</button><button class="bt pr" onclick="saveCat()">Salvar</button></div>
   </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lightbox" onclick="closeLb(event)">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="navLb(-1,event)">←</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="navLb(1,event)">→</button>
+  <div class="lb-counter" id="lbCounter"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -459,7 +483,7 @@ function renderBook(){
     const isLast=globalIdx===total-1;
     let preview='';
     if(it.type==='image'){
-      preview='<div class="preview"><img src="'+it.image_url+'" alt=""></div>';
+      preview='<div class="preview" onclick="openLb(\''+it.id+'\')"><img src="'+it.image_url+'" alt=""></div>';
     }else{
       preview='<div class="preview"><div class="txt-prev">'+esc(it.content||'')+'</div></div>';
     }
@@ -662,9 +686,58 @@ document.addEventListener('paste',async e=>{
   }
 });
 
+// ============ LIGHTBOX ============
+let lbImages=[];
+let lbIdx=0;
+
+function getBookImages(){
+  return bookItems.filter(x=>x.type==='image');
+}
+
+function openLb(id){
+  lbImages=getBookImages();
+  lbIdx=lbImages.findIndex(x=>x.id===id);
+  if(lbIdx<0)return;
+  showLbImage();
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function showLbImage(){
+  const it=lbImages[lbIdx];
+  if(!it)return;
+  document.getElementById('lbImg').src=it.image_url;
+  document.getElementById('lbCounter').textContent=(lbIdx+1)+' / '+lbImages.length;
+  document.querySelector('.lb-prev').style.display=lbImages.length>1?'block':'none';
+  document.querySelector('.lb-next').style.display=lbImages.length>1?'block':'none';
+}
+
+function closeLb(e){
+  if(e&&e.target!==document.getElementById('lightbox')&&e.target!==document.getElementById('lbImg'))return;
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+function navLb(dir,e){
+  if(e)e.stopPropagation();
+  lbIdx+=dir;
+  if(lbIdx<0)lbIdx=lbImages.length-1;
+  if(lbIdx>=lbImages.length)lbIdx=0;
+  showLbImage();
+}
+
 // Modal close handlers
 document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')})});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.mo.show').forEach(m=>m.classList.remove('show'))});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('lightbox').classList.contains('show')){
+      document.getElementById('lightbox').classList.remove('show');return;
+    }
+    document.querySelectorAll('.mo.show').forEach(m=>m.classList.remove('show'));
+  }
+  if(document.getElementById('lightbox').classList.contains('show')){
+    if(e.key==='ArrowLeft')navLb(-1);
+    if(e.key==='ArrowRight')navLb(1);
+  }
+});
 </script>
 </body>
 </html>
