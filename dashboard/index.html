@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koddex · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a12;--bg2:#12121e;--bg3:#1a1a2a;--bg4:#222236;--ink:#e8e4f0;--ink2:#b8b0d0;--dim:#7a7298;--faint:#4e486a;--neon:#00ffd1;--neon2:#ff00aa;--neon3:#6200ff;--cyan:#67e8f9;--yellow:#fbbf24;--red:#f87171;--green:#4ade80;--orange:#fb923c;--purple:#a78bfa;--pink:#f0abfc;--ln:rgba(196,181,232,.08);--ln2:rgba(196,181,232,.15);--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:14px;line-height:1.5;display:flex;overflow:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--faint);border-radius:3px}
+::selection{background:var(--neon);color:var(--bg)}.mono{font-family:'JetBrains Mono',monospace}
+
+/* SIDEBAR */
+.sb{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--ln);display:flex;flex-direction:column;height:100vh}
+.sb-logo{padding:24px 20px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px}
+.sb-logo .orb{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon3));box-shadow:0 0 12px var(--neon);flex-shrink:0}
+.sb-logo .nm{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700}
+.sb-logo .tg{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);margin-left:auto}
+.sb-nav{flex:1;padding:12px 8px;overflow-y:auto}
+.sb-it{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;color:var(--ink2);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;text-decoration:none;margin-bottom:2px}
+.sb-it:hover{background:rgba(255,255,255,.04);color:var(--ink)}
+.sb-it.active{background:rgba(0,255,209,.08);color:var(--neon)}
+.sb-it .ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-it .bd{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg3);padding:2px 6px;border-radius:99px;color:var(--dim)}
+.sb-sec{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);padding:16px 14px 8px}
+.sb-bot{padding:16px 20px;border-top:1px solid var(--ln)}
+.sb-usr{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--dim)}
+.sb-usr .av{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--neon3),var(--neon2));display:grid;place-items:center;color:white;font-size:11px;font-weight:700}
+.sb-out{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);cursor:pointer;background:none;border:none;opacity:.6}
+.sb-out:hover{opacity:1}
+
+/* MAIN */
+.mn{flex:1;overflow-y:auto;height:100vh}
+.mn-hd{padding:24px 32px;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.mn-hd h1{font-size:22px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.mn-ct{padding:28px 32px}
+.pg{display:none}.pg.active{display:block}
+
+/* BUTTONS */
+.bt{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;border:1px solid var(--ln2);background:rgba(255,255,255,.03);color:var(--ink);transition:all .15s;text-decoration:none}
+.bt:hover{background:rgba(255,255,255,.08);border-color:var(--neon)}
+.bt.pr{background:linear-gradient(135deg,var(--neon3),var(--neon2));border-color:transparent;color:white;box-shadow:0 0 16px rgba(98,0,255,.3)}
+.bt.pr:hover{box-shadow:0 0 24px rgba(98,0,255,.5);transform:translateY(-1px)}
+.bt.dg{color:var(--red);border-color:rgba(248,113,113,.2)}.bt.dg:hover{background:rgba(248,113,113,.1)}
+
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.mo.show{display:flex}
+.md{background:var(--bg2);border:1px solid var(--ln2);border-radius:16px;width:100%;max-width:520px;box-shadow:0 30px 80px rgba(0,0,0,.5);overflow:hidden}
+.md-h{padding:20px 24px;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between}
+.md-h h3{font-size:16px;font-weight:600}
+.md-x{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:4px}.md-x:hover{color:var(--ink)}
+.md-b{padding:24px}
+.md-f{padding:16px 24px;border-top:1px solid var(--ln);display:flex;gap:8px;justify-content:flex-end}
+.ff{margin-bottom:16px}
+.ff label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.ff input,.ff textarea,.ff select{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--ln2);border-radius:8px;padding:10px 14px;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;transition:all .2s}
+.ff textarea{resize:vertical;min-height:80px}
+.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,209,.1)}
+.ff select{cursor:pointer}.ff select option{background:var(--bg2);color:var(--ink)}
+
+/* LINKS */
+.lk-tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.lk-tb .sr{flex:1;min-width:200px;background:rgba(255,255,255,.04);border:1px solid var(--ln2);border-radius:8px;padding:8px 14px;color:var(--ink);font-family:inherit;font-size:13px;outline:none}
+.lk-tb .sr:focus{border-color:var(--neon)}.lk-tb .sr::placeholder{color:var(--faint)}
+.ct-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:24px}
+.ct{padding:6px 14px;border-radius:99px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--ln2);background:transparent;color:var(--ink2);transition:all .15s}
+.ct:hover{background:rgba(255,255,255,.04)}.ct.active{background:rgba(0,255,209,.1);border-color:var(--neon);color:var(--neon)}
+.lk-gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.lk-c{background:var(--bg2);border:1px solid var(--ln);border-radius:12px;padding:18px;transition:all .2s;position:relative}
+.lk-c:hover{border-color:var(--ln2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.lk-c .tp{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.lk-c .tg{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:rgba(0,255,209,.1);color:var(--neon)}
+.lk-c .acts{display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.lk-c:hover .acts{opacity:1}
+.lk-c .acts button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px}
+.lk-c .acts button:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.lk-c .acts .dl:hover{color:var(--red)}
+.lk-c h4{font-size:15px;font-weight:600;margin-bottom:4px}
+.lk-c .url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);text-decoration:none;display:block;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lk-c .url:hover{text-decoration:underline}
+.lk-c .ds{font-size:13px;color:var(--dim);line-height:1.5}
+.empty{text-align:center;padding:60px 20px;color:var(--faint)}.empty .ei{font-size:48px;margin-bottom:16px;display:block}.empty p{font-size:14px;margin-bottom:16px}
+.cat-color{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* BOOK */
+.bk-tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.bk-pg{display:flex;gap:4px;align-items:center;margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
+.bk-pg button{background:var(--bg3);border:1px solid var(--ln2);color:var(--ink2);border-radius:6px;padding:6px 10px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .15s}
+.bk-pg button:hover{background:var(--bg4);color:var(--ink)}.bk-pg button:disabled{opacity:.3;cursor:not-allowed}
+.bk-pg .pi{padding:0 8px}
+.bk-p{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;min-height:500px}
+.bk-ph{padding:16px 20px;border-bottom:1px solid var(--ln);display:flex;align-items:center}
+.bk-ph input{background:none;border:none;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;outline:none;flex:1}
+.bk-ph input::placeholder{color:var(--faint)}
+.bk-pb{padding:20px;min-height:400px}
+.bi-list{display:flex;flex-direction:column;gap:12px;min-height:200px}
+.bi{background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:14px;position:relative;transition:all .15s;cursor:grab}
+.bi:active{cursor:grabbing}.bi:hover{border-color:var(--ln2)}
+.bi .drag{position:absolute;top:50%;left:6px;transform:translateY(-50%);color:var(--faint);font-size:12px;cursor:grab;opacity:0;transition:opacity .15s}
+.bi:hover .drag{opacity:1}
+.bi .ct{padding-left:16px}
+.bi .del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--faint);cursor:pointer;font-size:13px;opacity:0;transition:all .15s;padding:4px;border-radius:4px}
+.bi:hover .del{opacity:1}.bi .del:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.bi.text .txt{font-size:14px;color:var(--ink2);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.bi.image img{max-width:100%;border-radius:8px;display:block}
+.bi.image .cap{font-size:12px;color:var(--dim);margin-top:8px;font-style:italic}
+.dz{border:2px dashed var(--ln2);border-radius:12px;padding:40px 20px;text-align:center;color:var(--faint);transition:all .25s;cursor:pointer;margin-top:12px}
+.dz:hover,.dz.over{border-color:var(--neon);background:rgba(0,255,209,.04);color:var(--neon)}
+.dz .di{font-size:32px;margin-bottom:8px;display:block}.dz .dt{font-size:13px;margin-bottom:4px}
+.dz .dh{font-size:11px;font-family:'JetBrains Mono',monospace;opacity:.6}
+.dz input[type="file"]{display:none}
+.dragging{opacity:.4;transform:scale(.98)}
+
+/* CATS */
+.cats-gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:20px}
+.cc{background:var(--bg2);border:1px solid var(--ln);border-radius:10px;padding:16px;display:flex;align-items:center;gap:12px;transition:all .15s}
+.cc:hover{border-color:var(--ln2)}
+.cc .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cc .nm{font-size:14px;font-weight:600;flex:1}
+.cc .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+.cc .acts button{background:none;border:none;color:var(--faint);cursor:pointer;font-size:13px;padding:2px;border-radius:4px}
+.cc .acts button:hover{color:var(--red);background:rgba(248,113,113,.1)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--bg3);border:1px solid var(--ln2);border-radius:10px;padding:12px 20px;font-size:13px;color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.er{border-left:3px solid var(--red)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--dim)}
+.spin{display:inline-block;width:20px;height:20px;border:2px solid var(--faint);border-top-color:var(--neon);border-radius:50%;animation:sp .6s linear infinite;margin-right:10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){
+  .sb{width:60px;min-width:60px}
+  .sb-logo .nm,.sb-logo .tg,.sb-it span:not(.ic),.sb-it .bd,.sb-sec,.sb-usr span,.sb-out{display:none}
+  .sb-logo{padding:16px 14px;justify-content:center}.sb-it{justify-content:center;padding:10px}
+  .mn-ct{padding:20px 16px}.lk-gr{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<aside class="sb">
+  <div class="sb-logo"><span class="orb"></span><span class="nm">koddex</span><span class="tg">private</span></div>
+  <nav class="sb-nav">
+    <div class="sb-sec">// Menu</div>
+    <a class="sb-it active" onclick="go('links')" data-p="links"><span class="ic">🔗</span><span>Meus Links</span><span class="bd" id="lkCnt">0</span></a>
+    <a class="sb-it" onclick="go('book')" data-p="book"><span class="ic">📖</span><span>Meu Book</span><span class="bd" id="bkCnt">0</span></a>
+    <a class="sb-it" onclick="go('cats')" data-p="cats"><span class="ic">🏷️</span><span>Categorias</span></a>
+    <div class="sb-sec" style="margin-top:16px">// Links rápidos</div>
+    <a class="sb-it" href="/" target="_blank"><span class="ic">🌐</span><span>koddex.com.br</span></a>
+    <a class="sb-it" href="https://wa.me/5518991979766" target="_blank"><span class="ic">💬</span><span>WhatsApp</span></a>
+  </nav>
+  <div class="sb-bot">
+    <div class="sb-usr"><span class="av">AC</span><span>Alexandre</span></div>
+    <button class="sb-out" onclick="logout()">→ sair</button>
+  </div>
+</aside>
+
+<div class="mn">
+  <div class="mn-hd"><h1 id="pgT">🔗 Meus Links</h1><div id="pgA"></div></div>
+  <div class="mn-ct">
+
+    <!-- LINKS -->
+    <div class="pg active" id="pg-links">
+      <div class="lk-tb">
+        <input class="sr" id="lkSearch" type="text" placeholder="Buscar links..." oninput="renderLinks()">
+        <button class="bt pr" onclick="openLinkM()">+ Novo Link</button>
+      </div>
+      <div class="ct-tabs" id="ctTabs"></div>
+      <div class="lk-gr" id="lkGrid"><div class="loading"><span class="spin"></span>Carregando...</div></div>
+    </div>
+
+    <!-- BOOK -->
+    <div class="pg" id="pg-book">
+      <div class="bk-tb">
+        <button class="bt pr" onclick="addPage()">+ Nova Página</button>
+        <button class="bt dg" onclick="delPage()">🗑️ Excluir Página</button>
+        <div class="bk-pg">
+          <button onclick="pgPrev()">←</button>
+          <span class="pi" id="bkPI">1/1</span>
+          <button onclick="pgNext()">→</button>
+        </div>
+      </div>
+      <div class="bk-p">
+        <div class="bk-ph"><input type="text" id="bkTitle" placeholder="Título da página..." onblur="saveTitle()"></div>
+        <div class="bk-pb">
+          <div class="bi-list" id="biList"><div class="loading"><span class="spin"></span>Carregando...</div></div>
+          <div class="dz" id="dropZ">
+            <span class="di">📎</span>
+            <div class="dt">Arraste imagens, textos ou arquivos aqui</div>
+            <div class="dh">ou clique para selecionar · cole com Ctrl+V</div>
+            <input type="file" id="fIn" accept="image/*" multiple>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="bt" onclick="addText()">📝 Adicionar texto</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATS -->
+    <div class="pg" id="pg-cats">
+      <button class="bt pr" onclick="openCatM()">+ Nova Categoria</button>
+      <div class="cats-gr" id="catsGr"><div class="loading"><span class="spin"></span>Carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div class="mo" id="lkMo">
+  <div class="md">
+    <div class="md-h"><h3 id="lkMoT">Novo Link</h3><button class="md-x" onclick="closeLkM()">✕</button></div>
+    <div class="md-b">
+      <input type="hidden" id="lkEd">
+      <div class="ff"><label>// título</label><input type="text" id="lkNm" placeholder="Ex: ChatGPT"></div>
+      <div class="ff"><label>// url</label><input type="url" id="lkUrl" placeholder="https://..."></div>
+      <div class="ff"><label>// categoria</label><select id="lkCat"></select></div>
+      <div class="ff"><label>// descrição (opcional)</label><textarea id="lkDs" placeholder="Pra que serve..."></textarea></div>
+    </div>
+    <div class="md-f"><button class="bt" onclick="closeLkM()">Cancelar</button><button class="bt pr" onclick="saveLk()">Salvar</button></div>
+  </div>
+</div>
+
+<!-- CAT MODAL -->
+<div class="mo" id="ctMo">
+  <div class="md">
+    <div class="md-h"><h3>Nova Categoria</h3><button class="md-x" onclick="closeCtM()">✕</button></div>
+    <div class="md-b">
+      <div class="ff"><label>// nome</label><input type="text" id="ctNm" placeholder="Ex: Inteligência Artificial"></div>
+      <div class="ff"><label>// cor</label><select id="ctCl">
+        <option value="neon">Verde Neon</option><option value="purple">Roxo</option><option value="cyan">Ciano</option>
+        <option value="yellow">Amarelo</option><option value="pink">Rosa</option><option value="orange">Laranja</option><option value="red">Vermelho</option>
+      </select></div>
+    </div>
+    <div class="md-f"><button class="bt" onclick="closeCtM()">Cancelar</button><button class="bt pr" onclick="saveCat()">Salvar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SB_URL='https://czfdzktacikuyfjcytrx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6ZmR6a3RhY2lrdXlmamN5dHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDEwNDMsImV4cCI6MjA5MjM3NzA0M30.lqarEQivfoHwCElWYFWivrIyZEmhUbU6OMRMYXTnLfQ';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+// Auth check
+sb.auth.getSession().then(({data})=>{
+  if(!data.session) location.href='../admin/';
+  else init();
+});
+
+async function logout(){
+  await sb.auth.signOut();
+  location.href='../admin/';
+}
+
+// ============ STATE ============
+let cats=[], links=[], pages=[], items=[], pgIdx=0, filter='all';
+
+const COLORS={neon:'#00ffd1',purple:'#a78bfa',cyan:'#67e8f9',yellow:'#fbbf24',pink:'#f0abfc',orange:'#fb923c',red:'#f87171'};
+
+function toast(msg,ok=true){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+(ok?'ok':'er');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+// ============ INIT ============
+async function init(){
+  await loadCats();
+  await loadLinks();
+  await loadPages();
+  renderLinks();
+}
+
+// ============ PAGE SWITCHING ============
+function go(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.querySelectorAll('.sb-it[data-p]').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.sb-it[data-p="'+p+'"]').classList.add('active');
+  const t={links:'🔗 Meus Links',book:'📖 Meu Book',cats:'🏷️ Categorias'};
+  document.getElementById('pgT').textContent=t[p];
+  if(p==='links')renderLinks();
+  if(p==='book')renderBook();
+  if(p==='cats')renderCats();
+}
+
+// ============ CATEGORIES ============
+async function loadCats(){
+  const{data}=await sb.from('categories').select('*').order('sort_order');
+  cats=data||[];
+}
+
+function renderCatTabs(){
+  const counts={};links.forEach(l=>{if(l.category_id)counts[l.category_id]=(counts[l.category_id]||0)+1});
+  let h='<button class="ct '+(filter==='all'?'active':'')+'" onclick="setFilter(\'all\')">Todos ('+links.length+')</button>';
+  cats.forEach(c=>{
+    h+='<button class="ct '+(filter===c.id?'active':'')+'" onclick="setFilter(\''+c.id+'\')"><span class="cat-color" style="background:'+COLORS[c.color]+'"></span>'+esc(c.name)+' ('+(counts[c.id]||0)+')</button>';
+  });
+  document.getElementById('ctTabs').innerHTML=h;
+}
+
+function setFilter(id){filter=id;renderLinks()}
+
+function renderCats(){
+  const counts={};links.forEach(l=>{if(l.category_id)counts[l.category_id]=(counts[l.category_id]||0)+1});
+  if(!cats.length){document.getElementById('catsGr').innerHTML='<div class="empty"><span class="ei">🏷️</span><p>Nenhuma categoria</p></div>';return}
+  document.getElementById('catsGr').innerHTML=cats.map(c=>
+    '<div class="cc"><span class="dot" style="background:'+(COLORS[c.color]||'#888')+'"></span><span class="nm">'+esc(c.name)+'</span><span class="cnt">'+(counts[c.id]||0)+' links</span><div class="acts"><button onclick="delCat(\''+c.id+'\')" title="Excluir">🗑️</button></div></div>'
+  ).join('');
+}
+
+function openCatM(){document.getElementById('ctNm').value='';document.getElementById('ctMo').classList.add('show');setTimeout(()=>document.getElementById('ctNm').focus(),100)}
+function closeCtM(){document.getElementById('ctMo').classList.remove('show')}
+
+async function saveCat(){
+  const name=document.getElementById('ctNm').value.trim();
+  const color=document.getElementById('ctCl').value;
+  if(!name)return;
+  const{error}=await sb.from('categories').insert({name,color,sort_order:cats.length+1});
+  if(error){toast('Erro ao salvar',false);return}
+  await loadCats();closeCtM();renderCats();renderLinks();toast('Categoria criada');
+}
+
+async function delCat(id){
+  if(!confirm('Excluir esta categoria?'))return;
+  await sb.from('categories').delete().eq('id',id);
+  await loadCats();renderCats();renderLinks();toast('Categoria excluída');
+}
+
+// ============ LINKS ============
+async function loadLinks(){
+  const{data}=await sb.from('links').select('*').order('created_at',{ascending:false});
+  links=data||[];
+  document.getElementById('lkCnt').textContent=links.length;
+}
+
+function renderLinks(){
+  renderCatTabs();
+  const q=document.getElementById('lkSearch').value.toLowerCase();
+  let fl=links.filter(l=>{
+    if(filter!=='all'&&l.category_id!==filter)return false;
+    if(q&&!l.name.toLowerCase().includes(q)&&!l.url.toLowerCase().includes(q)&&!(l.description||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  if(!fl.length){
+    document.getElementById('lkGrid').innerHTML='<div class="empty"><span class="ei">🔗</span><p>Nenhum link encontrado</p><button class="bt pr" onclick="openLinkM()">+ Adicionar primeiro link</button></div>';
+    return;
+  }
+  document.getElementById('lkGrid').innerHTML=fl.map(l=>{
+    const c=cats.find(x=>x.id===l.category_id)||{name:'Sem categoria',color:'neon'};
+    return '<div class="lk-c" ondblclick="window.open(\''+l.url+'\',\'_blank\')"><div class="tp"><span class="tg" style="background:rgba('+(c.color==='neon'?'0,255,209':c.color==='purple'?'167,139,250':c.color==='cyan'?'103,232,249':c.color==='yellow'?'251,191,36':c.color==='pink'?'240,171,252':c.color==='orange'?'251,146,60':'248,113,113')+',.15);color:'+(COLORS[c.color]||'#888')+'">'+esc(c.name)+'</span><div class="acts"><button onclick="window.open(\''+l.url+'\',\'_blank\')" title="Abrir">↗</button><button onclick="editLk(\''+l.id+'\')" title="Editar">✏️</button><button class="dl" onclick="delLk(\''+l.id+'\')" title="Excluir">🗑️</button></div></div><h4>'+esc(l.name)+'</h4><a class="url" href="'+l.url+'" target="_blank" onclick="event.stopPropagation()">'+esc(l.url)+'</a>'+(l.description?'<div class="ds">'+esc(l.description)+'</div>':'')+'</div>';
+  }).join('');
+}
+
+function openLinkM(){
+  document.getElementById('lkEd').value='';
+  document.getElementById('lkNm').value='';
+  document.getElementById('lkUrl').value='';
+  document.getElementById('lkDs').value='';
+  document.getElementById('lkMoT').textContent='Novo Link';
+  document.getElementById('lkCat').innerHTML=cats.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
+  document.getElementById('lkMo').classList.add('show');
+  setTimeout(()=>document.getElementById('lkNm').focus(),100);
+}
+
+function editLk(id){
+  const l=links.find(x=>x.id===id);if(!l)return;
+  openLinkM();
+  document.getElementById('lkEd').value=l.id;
+  document.getElementById('lkNm').value=l.name;
+  document.getElementById('lkUrl').value=l.url;
+  document.getElementById('lkCat').value=l.category_id||'';
+  document.getElementById('lkDs').value=l.description||'';
+  document.getElementById('lkMoT').textContent='Editar Link';
+}
+function closeLkM(){document.getElementById('lkMo').classList.remove('show')}
+
+async function saveLk(){
+  const eid=document.getElementById('lkEd').value;
+  const name=document.getElementById('lkNm').value.trim();
+  const url=document.getElementById('lkUrl').value.trim();
+  const category_id=document.getElementById('lkCat').value||null;
+  const description=document.getElementById('lkDs').value.trim()||null;
+  if(!name||!url)return;
+  if(eid){
+    await sb.from('links').update({name,url,category_id,description,updated_at:new Date().toISOString()}).eq('id',eid);
+    toast('Link atualizado');
+  }else{
+    await sb.from('links').insert({name,url,category_id,description});
+    toast('Link salvo');
+  }
+  await loadLinks();closeLkM();renderLinks();
+}
+
+async function delLk(id){
+  if(!confirm('Excluir este link?'))return;
+  await sb.from('links').delete().eq('id',id);
+  await loadLinks();renderLinks();toast('Link excluído');
+}
+
+// ============ BOOK ============
+async function loadPages(){
+  const{data}=await sb.from('book_pages').select('*').order('page_number');
+  pages=data||[];
+  if(!pages.length){
+    const{data:np}=await sb.from('book_pages').insert({title:'Primeira página',page_number:1}).select();
+    pages=np||[];
+  }
+  document.getElementById('bkCnt').textContent=pages.length;
+  pgIdx=0;
+}
+
+async function loadItems(pageId){
+  const{data}=await sb.from('book_items').select('*').eq('page_id',pageId).order('sort_order');
+  items=data||[];
+}
+
+async function renderBook(){
+  if(!pages.length)return;
+  if(pgIdx>=pages.length)pgIdx=pages.length-1;
+  if(pgIdx<0)pgIdx=0;
+  const pg=pages[pgIdx];
+  document.getElementById('bkTitle').value=pg.title||'';
+  document.getElementById('bkPI').textContent=(pgIdx+1)+' / '+pages.length;
+  document.getElementById('biList').innerHTML='<div class="loading"><span class="spin"></span>Carregando...</div>';
+  await loadItems(pg.id);
+  if(!items.length){
+    document.getElementById('biList').innerHTML='<div class="empty" style="padding:30px"><span class="ei">📎</span><p>Página vazia — arraste algo aqui</p></div>';
+  }else{
+    document.getElementById('biList').innerHTML=items.map((it,i)=>{
+      if(it.type==='text'){
+        return '<div class="bi text" draggable="true" data-id="'+it.id+'" data-idx="'+i+'"><span class="drag">⠿</span><button class="del" onclick="delItem(\''+it.id+'\')">✕</button><div class="ct"><div class="txt" contenteditable="true" onblur="updateText(\''+it.id+'\',this)">'+esc(it.content)+'</div></div></div>';
+      }else{
+        return '<div class="bi image" draggable="true" data-id="'+it.id+'" data-idx="'+i+'"><span class="drag">⠿</span><button class="del" onclick="delItem(\''+it.id+'\')">✕</button><div class="ct"><img src="'+it.image_url+'" alt=""><div class="cap">'+esc(it.caption||'')+'</div></div></div>';
+      }
+    }).join('');
+    initDrag();
+  }
+}
+
+async function addPage(){
+  const num=pages.length+1;
+  await sb.from('book_pages').insert({title:'',page_number:num});
+  await loadPages();pgIdx=pages.length-1;renderBook();toast('Página criada');
+}
+
+async function delPage(){
+  if(pages.length<=1)return alert('Não é possível excluir a última página.');
+  if(!confirm('Excluir esta página e todo seu conteúdo?'))return;
+  const pg=pages[pgIdx];
+  // Delete items and images from storage
+  for(const it of items){
+    if(it.type==='image'&&it.image_url&&it.image_url.includes('book-images')){
+      const path=it.image_url.split('/book-images/')[1];
+      if(path)await sb.storage.from('book-images').remove([path]);
+    }
+  }
+  await sb.from('book_pages').delete().eq('id',pg.id);
+  await loadPages();renderBook();toast('Página excluída');
+}
+
+function pgPrev(){if(pgIdx>0){pgIdx--;renderBook()}}
+function pgNext(){if(pgIdx<pages.length-1){pgIdx++;renderBook()}}
+
+async function saveTitle(){
+  const pg=pages[pgIdx];if(!pg)return;
+  const title=document.getElementById('bkTitle').value;
+  await sb.from('book_pages').update({title}).eq('id',pg.id);
+  pages[pgIdx].title=title;
+}
+
+async function addText(){
+  const text=prompt('Cole ou digite o texto:');
+  if(!text)return;
+  const pg=pages[pgIdx];
+  await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
+  await renderBook();toast('Texto adicionado');
+}
+
+async function updateText(id,el){
+  await sb.from('book_items').update({content:el.innerText}).eq('id',id);
+}
+
+async function delItem(id){
+  const it=items.find(x=>x.id===id);
+  if(it&&it.type==='image'&&it.image_url&&it.image_url.includes('book-images')){
+    const path=it.image_url.split('/book-images/')[1];
+    if(path)await sb.storage.from('book-images').remove([path]);
+  }
+  await sb.from('book_items').delete().eq('id',id);
+  await renderBook();toast('Item excluído');
+}
+
+async function uploadImage(file){
+  const ext=file.name.split('.').pop();
+  const name=Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const{data,error}=await sb.storage.from('book-images').upload(name,file,{contentType:file.type});
+  if(error){toast('Erro no upload: '+error.message,false);return null}
+  const{data:url}=sb.storage.from('book-images').getPublicUrl(name);
+  return url.publicUrl;
+}
+
+async function addImageItem(file){
+  const url=await uploadImage(file);
+  if(!url)return;
+  const pg=pages[pgIdx];
+  await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:url,sort_order:items.length});
+  await renderBook();toast('Imagem adicionada');
+}
+
+// Drag & drop for reorder
+function initDrag(){
+  const container=document.getElementById('biList');
+  const els=container.querySelectorAll('.bi');
+  els.forEach(el=>{
+    el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',el.dataset.id);el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');saveOrder()});
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();
+      const dragging=container.querySelector('.dragging');
+      if(dragging&&dragging!==el){
+        const rect=el.getBoundingClientRect();
+        const y=e.clientY-rect.top;
+        if(y<rect.height/2)container.insertBefore(dragging,el);
+        else container.insertBefore(dragging,el.nextSibling);
+      }
+    });
+  });
+}
+
+async function saveOrder(){
+  const els=[...document.querySelectorAll('#biList .bi')];
+  for(let i=0;i<els.length;i++){
+    await sb.from('book_items').update({sort_order:i}).eq('id',els[i].dataset.id);
+  }
+}
+
+// Drop zone
+const dz=document.getElementById('dropZ');
+const fIn=document.getElementById('fIn');
+dz.addEventListener('click',()=>fIn.click());
+fIn.addEventListener('change',e=>handleFiles(e.target.files));
+dz.addEventListener('dragenter',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',async e=>{
+  e.preventDefault();dz.classList.remove('over');
+  if(e.dataTransfer.files.length>0){handleFiles(e.dataTransfer.files);return}
+  const text=e.dataTransfer.getData('text/plain');
+  if(text){
+    if(/\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(text)){
+      const pg=pages[pgIdx];
+      await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:text,sort_order:items.length});
+      await renderBook();toast('Imagem adicionada');
+    }else{
+      const pg=pages[pgIdx];
+      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
+      await renderBook();toast('Texto adicionado');
+    }
+    return;
+  }
+  const html=e.dataTransfer.getData('text/html');
+  if(html){
+    const tmp=document.createElement('div');tmp.innerHTML=html;
+    const img=tmp.querySelector('img');
+    if(img&&img.src){
+      const pg=pages[pgIdx];
+      await sb.from('book_items').insert({page_id:pg.id,type:'image',image_url:img.src,sort_order:items.length});
+      await renderBook();toast('Imagem adicionada');return;
+    }
+    const txt=tmp.textContent.trim();
+    if(txt){
+      const pg=pages[pgIdx];
+      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:txt,sort_order:items.length});
+      await renderBook();toast('Texto adicionado');
+    }
+  }
+});
+
+function handleFiles(files){
+  [...files].forEach(f=>{if(f.type.startsWith('image/'))addImageItem(f)});
+}
+
+// Paste handler
+document.addEventListener('paste',async e=>{
+  if(!document.getElementById('pg-book').classList.contains('active'))return;
+  for(let item of e.clipboardData.items){
+    if(item.type.startsWith('image/')){
+      const file=item.getAsFile();
+      await addImageItem(file);
+      e.preventDefault();return;
+    }
+  }
+  if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'&&!document.activeElement.isContentEditable){
+    const text=e.clipboardData.getData('text/plain');
+    if(text){
+      const pg=pages[pgIdx];
+      await sb.from('book_items').insert({page_id:pg.id,type:'text',content:text,sort_order:items.length});
+      await renderBook();toast('Texto colado');
+      e.preventDefault();
+    }
+  }
+});
+
+// Modal close handlers
+document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')})});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.mo.show').forEach(m=>m.classList.remove('show'))});
+</script>
+</body>
+</html>

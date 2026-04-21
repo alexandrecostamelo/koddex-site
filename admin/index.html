@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koddex · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0118;--ink:#f0e9ff;--ink-dim:#8a7ab8;--neon:#00ffd1;--neon-2:#ff00aa;--neon-3:#6200ff;--red:#ff4444}
+  *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 40% at 30% 30%,rgba(98,0,255,.3),transparent),radial-gradient(ellipse 40% 50% at 70% 70%,rgba(255,0,170,.2),transparent),radial-gradient(ellipse 30% 30% at 50% 90%,rgba(0,255,209,.15),transparent)}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px}
+  .wrap{position:relative;z-index:2;width:100%;max-width:400px;padding:0 24px}
+  .logo{text-align:center;margin-bottom:48px}
+  .logo .orb{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon-3));box-shadow:0 0 24px var(--neon);display:inline-block;margin-right:12px;vertical-align:middle;animation:p 3s ease-in-out infinite}
+  @keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+  .logo .name{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;vertical-align:middle}
+  .logo .sub{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);margin-top:8px;display:block}
+  .card{background:rgba(255,255,255,.03);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .field{margin-bottom:20px}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px}
+  .field input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 16px;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:15px;outline:none;transition:all .25s}
+  .field input:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,209,.15)}
+  .err{display:none;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.3);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);margin-bottom:16px}
+  .err.show{display:block}
+  .btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--neon-3),var(--neon-2));color:white;border:1px solid rgba(255,255,255,.2);border-radius:12px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s;box-shadow:0 0 32px rgba(98,0,255,.4);margin-top:8px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(98,0,255,.6)}
+  .btn:disabled{opacity:.5;cursor:wait;transform:none}
+  .foot{text-align:center;margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);opacity:.5}
+  .sp{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:s .6s linear infinite;margin-right:8px;vertical-align:middle}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><span class="orb"></span><span class="name">koddex</span><span class="sub">// painel privado</span></div>
+  <div class="card">
+    <div id="err" class="err"></div>
+    <div class="field"><label>// e-mail</label><input type="email" id="em" placeholder="seu@email.com" autofocus></div>
+    <div class="field"><label>// senha</label><input type="password" id="pw" placeholder="••••••••"></div>
+    <button class="btn" id="bt" onclick="go()">Entrar ✦</button>
+  </div>
+  <div class="foot">koddex.com.br · acesso restrito</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const sb=supabase.createClient('https://czfdzktacikuyfjcytrx.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6ZmR6a3RhY2lrdXlmamN5dHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDEwNDMsImV4cCI6MjA5MjM3NzA0M30.lqarEQivfoHwCElWYFWivrIyZEmhUbU6OMRMYXTnLfQ');
+sb.auth.getSession().then(({data})=>{if(data.session)location.href='../dashboard/'});
+async function go(){
+  const b=document.getElementById('bt'),e=document.getElementById('err'),em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
+  if(!em||!pw){e.textContent='Preencha e-mail e senha.';e.classList.add('show');return}
+  b.disabled=true;b.innerHTML='<span class="sp"></span>Entrando...';e.classList.remove('show');
+  const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){e.textContent='Credenciais inválidas.';e.classList.add('show');b.disabled=false;b.innerHTML='Entrar ✦';document.getElementById('pw').value='';return}
+  location.href='../dashboard/';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+</script>
+</body>
+</html>
