@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Métrica BI — Case Study | Koddex</title>
+<meta name="description" content="A Métrica BI é uma plataforma de business intelligence construída do zero para uma indústria que precisava unificar dados de 8 fontes diferentes em dashboards c">
+<meta property="og:title" content="Métrica BI — Case Study | Koddex">
+<meta property="og:description" content="Inteligência de dados que transforma decisões.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0118;--bg2:#14082b;--bg3:#1a0d3a;--ink:#f0e9ff;--ink2:#c4b5e8;--dim:#8a7ab8;--faint:#5a4e85;--accent:#00ffd1;--accent2:#6200ff;--line:rgba(196,181,232,.1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 30%,rgba(98,0,255,.25),transparent 60%),radial-gradient(ellipse 50% 50% at 80% 20%,rgba(255,0,170,.15),transparent 60%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:linear-gradient(rgba(196,181,232,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(196,181,232,.03) 1px,transparent 1px);background-size:80px 80px}
+::selection{background:var(--accent);color:var(--bg)}
+.glass{background:rgba(255,255,255,.03);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:10}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;padding:14px 0;background:linear-gradient(90deg,#050511 0%,#050511 200px,rgba(10,1,24,.85) 400px,rgba(10,1,24,.85) 100%);backdrop-filter:blur(24px);border-bottom:1px solid var(--line)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+nav img{height:48px;display:block}
+.back{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink2);padding:8px 16px;border-radius:99px;border:1px solid rgba(255,255,255,.08);transition:all .25s}
+.back:hover{color:var(--ink);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.05)}
+
+/* HERO */
+.hero{padding:120px 0 80px;position:relative}
+.hero-gradient{position:absolute;top:0;left:0;right:0;height:400px;linear-gradient(135deg, #00ffd1 0%, #6200ff 50%, #0a0118 100%);opacity:.3;pointer-events:none;mask-image:linear-gradient(to bottom,black,transparent)}
+.hero-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.hero-meta::before{content:'';width:32px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(40px,7vw,72px);font-weight:800;line-height:1;letter-spacing:-.04em;margin-bottom:16px;background:linear-gradient(180deg,#fff 30%,var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-tagline{font-size:clamp(18px,2.5vw,24px);color:var(--ink2);max-width:600px;margin-bottom:40px}
+.hero-info{display:flex;gap:40px;flex-wrap:wrap}
+.hero-info-item .label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.hero-info-item .value{font-size:15px;font-weight:600}
+.hero-info-item .value.accent{color:var(--accent)}
+
+/* SECTIONS */
+.section{padding:80px 0}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--accent)}
+.section-title{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px}
+.section-desc{font-size:17px;color:var(--ink2);max-width:600px;line-height:1.7;margin-bottom:40px}
+
+/* OVERVIEW */
+.overview-text{font-size:20px;color:var(--ink2);line-height:1.8;max-width:800px;margin-bottom:48px}
+.overview-text strong{color:var(--ink);font-weight:600}
+
+/* PROBLEMS */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.prob-card{padding:32px;position:relative;overflow:hidden}
+.prob-card .prob-num{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;color:rgba(255,255,255,.04);position:absolute;top:16px;right:20px;line-height:1}
+.prob-card h3{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.prob-card p{font-size:14px;color:var(--ink2);line-height:1.7}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.feat-card{padding:28px;transition:all .3s}
+.feat-card:hover{transform:translateY(-4px);border-color:var(--accent)}
+.feat-icon{font-size:28px;margin-bottom:14px}
+.feat-card h3{font-size:16px;font-weight:700;margin-bottom:8px}
+.feat-card p{font-size:14px;color:var(--ink2);line-height:1.6}
+
+/* SCREENS */
+.screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.screen-card{}
+.screen-mock{height:280px;margin-bottom:16px;border-radius:16px;overflow:hidden}
+.screen-card h4{font-size:16px;font-weight:700;margin-bottom:4px}
+.screen-card p{font-size:13px;color:var(--dim);line-height:1.5}
+
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:3px;border-radius:20px;overflow:hidden}
+.res-item{background:var(--bg2);padding:32px 24px;text-align:center}
+.res-num{font-size:clamp(32px,5vw,48px);font-weight:800;color:var(--accent);letter-spacing:-.03em;line-height:1;margin-bottom:8px;font-family:'Space Grotesk',sans-serif}
+.res-label{font-size:13px;color:var(--ink2);line-height:1.5}
+
+/* TECH */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;border-radius:16px;overflow:hidden}
+.tech-item{background:var(--bg2);padding:20px 24px;display:flex;gap:16px;align-items:flex-start}
+.tech-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--accent);min-width:110px;flex-shrink:0}
+.tech-desc{font-size:13px;color:var(--ink2);line-height:1.5}
+
+/* TESTIMONIAL */
+.testi-block{padding:48px;text-align:center;margin-top:80px}
+.testi-quote{font-size:clamp(18px,2.5vw,22px);font-style:italic;line-height:1.8;max-width:700px;margin:0 auto 32px;color:var(--ink)}
+.testi-author{font-size:15px;font-weight:700}
+.testi-role{font-size:13px;color:var(--dim);margin-top:4px}
+
+/* CTA */
+.cta-section{text-align:center;padding:100px 0 120px}
+.cta-section h2{font-size:clamp(28px,4vw,40px);font-weight:700;margin-bottom:12px}
+.cta-section p{font-size:17px;color:var(--ink2);margin-bottom:32px}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-neon{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:99px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:white;font-weight:700;font-size:15px;transition:all .25s;border:1px solid rgba(255,255,255,.2)}
+.btn-neon:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(98,0,255,.4)}
+.btn-glass{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:99px;background:rgba(255,255,255,.05);color:var(--ink);font-weight:600;font-size:15px;border:1px solid rgba(255,255,255,.1);transition:all .25s}
+.btn-glass:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 0;text-align:center}
+footer p{font-size:13px;color:var(--faint)}
+footer a{color:var(--accent)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero-info{gap:20px}
+  .cta-btns{flex-direction:column;align-items:center}
+  .screen-mock{height:200px}
+  nav .inner{padding:0 16px}
+  .wrap{padding:0 20px}
+}
+
+/* WhatsApp float */
+.wpp{position:fixed;bottom:24px;right:24px;z-index:9998;width:56px;height:56px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,.4);transition:transform .2s}
+.wpp:hover{transform:scale(1.1)}
+.wpp svg{width:28px;height:28px;fill:#fff}
+
+.hero-mockup{margin-top:48px;position:relative;z-index:10}
+.browser{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 120px rgba(0,255,209,.05)}
+.browser-bar{height:36px;background:#0d0a1e;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 14px;gap:7px}
+.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.url{margin-left:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);padding:3px 12px;border-radius:4px}
+.browser-body{display:flex;background:#080514;min-height:400px}
+.sidebar{width:48px;background:rgba(255,255,255,.02);border-right:1px solid rgba(255,255,255,.04);padding:12px 8px;display:flex;flex-direction:column;gap:8px}
+.sb-item{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.03)}.sb-item.active{background:rgba(0,255,209,.12);box-shadow:inset 0 0 0 1px rgba(0,255,209,.2)}
+.main-area{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
+.top-bar{display:flex;justify-content:space-between;align-items:center}
+.tb-title{width:120px;height:10px;background:rgba(255,255,255,.08);border-radius:4px}
+.tb-actions{display:flex;gap:6px}.tb-btn{width:60px;height:26px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.tb-btn.accent{background:rgba(0,255,209,.12);border-color:rgba(0,255,209,.2)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kpi{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:14px}
+.kpi-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#f0e9ff;margin-bottom:4px}
+.kpi-label{height:6px;width:60%;background:rgba(255,255,255,.06);border-radius:3px;margin-bottom:8px}
+.kpi-spark{height:20px;border-radius:4px}
+.kpi-spark.up{background:linear-gradient(90deg,transparent,rgba(0,255,209,.15));border-bottom:2px solid #00ffd1}
+.kpi-spark.down{background:linear-gradient(90deg,transparent,rgba(255,0,170,.15));border-bottom:2px solid #ff00aa}
+.kpi-spark.flat{background:linear-gradient(90deg,transparent,rgba(255,234,0,.1));border-bottom:2px solid #ffea00}
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+.chart-big,.chart-sm{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:14px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ch-title{width:80px;height:6px;background:rgba(255,255,255,.06);border-radius:3px}
+.ch-tabs{display:flex;gap:4px}.ch-tabs span{width:32px;height:16px;border-radius:4px;background:rgba(255,255,255,.03);display:block}.ch-tabs span.active{background:rgba(0,255,209,.12)}
+.chart-area{height:80px}
+.chart-area svg{width:100%;height:100%}
+.bars{display:flex;align-items:flex-end;gap:6px;height:80px;padding-top:10px}
+.bar{flex:1;background:linear-gradient(180deg,rgba(98,0,255,.6),rgba(98,0,255,.15));border-radius:4px 4px 0 0}
+.table-area{background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.03);border-radius:8px;overflow:hidden}
+.table-row{display:grid;grid-template-columns:1.5fr 1fr 1fr .8fr 1fr;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);align-items:center}
+.table-row.header{background:rgba(255,255,255,.02)}
+.table-row span{height:6px;background:rgba(255,255,255,.06);border-radius:3px;display:block}
+.table-row .tag{height:18px;width:56px;border-radius:4px}.tag.green{background:rgba(0,255,209,.12)}.tag.yellow{background:rgba(255,234,0,.12)}
+@media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.browser-body{min-height:300px}}
+
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <a href="index.html"><img src="data:image/png;base64,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" alt="Koddex" height="48"></a>
+  <a href="index.html#portfolio" class="back">← Voltar ao portfolio</a>
+</div></nav>
+
+<div class="hero-gradient"></div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-meta">SaaS · Dashboard · 2026</div>
+    <h1>Métrica BI</h1>
+    <p class="hero-tagline">Inteligência de dados que transforma decisões.</p>
+    <div class="hero-info">
+      <div class="hero-info-item"><div class="label">Cliente</div><div class="value">Indústria · Presidente Prudente, SP</div></div>
+      <div class="hero-info-item"><div class="label">Entrega</div><div class="value accent">⚡ 12 dias</div></div>
+      <div class="hero-info-item"><div class="label">Ano</div><div class="value">2026</div></div>
+      <div class="hero-info-item"><div class="label">Stack</div><div class="value">Next.js 14 + PostgreSQL</div></div>
+    </div>
+<div class="hero-mockup">
+  <div class="browser">
+    <div class="browser-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">app.metrica-bi.com.br/dashboard</span></div>
+    <div class="browser-body">
+      <div class="sidebar">
+        <div class="sb-item active"></div><div class="sb-item"></div><div class="sb-item"></div><div class="sb-item"></div><div class="sb-item"></div>
+      </div>
+      <div class="main-area">
+        <div class="top-bar"><div class="tb-title"></div><div class="tb-actions"><div class="tb-btn"></div><div class="tb-btn accent"></div></div></div>
+        <div class="kpi-row">
+          <div class="kpi"><div class="kpi-val">R$ 2.4M</div><div class="kpi-label"></div><div class="kpi-spark up"></div></div>
+          <div class="kpi"><div class="kpi-val">1.247</div><div class="kpi-label"></div><div class="kpi-spark up"></div></div>
+          <div class="kpi"><div class="kpi-val">94.2%</div><div class="kpi-label"></div><div class="kpi-spark down"></div></div>
+          <div class="kpi"><div class="kpi-val">8</div><div class="kpi-label"></div><div class="kpi-spark flat"></div></div>
+        </div>
+        <div class="charts-row">
+          <div class="chart-big">
+            <div class="chart-header"><div class="ch-title"></div><div class="ch-tabs"><span class="active"></span><span></span><span></span></div></div>
+            <div class="chart-area">
+              <svg viewBox="0 0 400 120" preserveAspectRatio="none"><path d="M0,100 C50,90 100,40 150,60 C200,80 250,20 300,30 C350,40 400,10 400,10 L400,120 L0,120Z" fill="rgba(0,255,209,.08)" stroke="none"/><path d="M0,100 C50,90 100,40 150,60 C200,80 250,20 300,30 C350,40 400,10 400,10" fill="none" stroke="#00ffd1" stroke-width="2"/></svg>
+            </div>
+          </div>
+          <div class="chart-sm">
+            <div class="chart-header"><div class="ch-title"></div></div>
+            <div class="bars">
+              <div class="bar" style="height:70%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:45%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:95%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="table-area">
+          <div class="table-row header"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="table-row"><span></span><span></span><span></span><span class="tag green"></span><span></span></div>
+          <div class="table-row"><span></span><span></span><span></span><span class="tag yellow"></span><span></span></div>
+          <div class="table-row"><span></span><span></span><span></span><span class="tag green"></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="section"><div class="wrap">
+  <div class="section-label">Visão geral</div>
+  <p class="overview-text">A Métrica BI é uma plataforma de business intelligence construída do zero para uma indústria que precisava unificar dados de 8 fontes diferentes em dashboards customizáveis e em tempo real.</p>
+</div></section>
+
+<section class="section" style="padding-top:0"><div class="wrap">
+  <div class="section-label">O problema</div>
+  <h2 class="section-title">8 fontes de dados, zero visibilidade.</h2>
+  <div class="prob-grid">
+        <div class="prob-card glass">
+          <div class="prob-num">01</div>
+          <h3>Dados espalhados em 8 sistemas diferentes</h3>
+          <p>ERP, CRM, planilhas Excel, Google Sheets, banco de dados legado, APIs de fornecedores, sistema fiscal e controle de estoque. Nenhum conversava com o outro.</p>
+        </div>
+        <div class="prob-card glass">
+          <div class="prob-num">02</div>
+          <h3>Relatórios manuais levavam dias</h3>
+          <p>A equipe de BI gastava 3 dias por semana compilando relatórios manualmente — copiando dados de um sistema pro outro.</p>
+        </div>
+        <div class="prob-card glass">
+          <div class="prob-num">03</div>
+          <h3>Decisões baseadas em dados desatualizados</h3>
+          <p>Quando o relatório ficava pronto, os dados já tinham mudado. A diretoria tomava decisões com informação de 5-7 dias atrás.</p>
+        </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-label">A solução</div>
+  <h2 class="section-title">Um dashboard que pensa por você.</h2>
+  <div class="feat-grid">
+        <div class="feat-card glass">
+          <div class="feat-icon">🔌</div>
+          <h3>Conectores inteligentes</h3>
+          <p>8 conectores customizados que puxam dados automaticamente de cada fonte — ERP, CRM, fiscal, estoque e mais. Sem intervenção humana.</p>
+        </div>
+        <div class="feat-card glass">
+          <div class="feat-icon">📊</div>
+          <h3>Dashboards customizáveis</h3>
+          <p>Interface drag-and-drop onde qualquer pessoa monta seus próprios dashboards. Gráficos, tabelas, KPIs — tudo arrastando componentes.</p>
+        </div>
+        <div class="feat-card glass">
+          <div class="feat-icon">⚡</div>
+          <h3>Atualização em tempo real</h3>
+          <p>WebSocket push — quando um dado muda na fonte, o dashboard atualiza em menos de 3 segundos. Sem refresh manual.</p>
+        </div>
+        <div class="feat-card glass">
+          <div class="feat-icon">🔔</div>
+          <h3>Alertas inteligentes</h3>
+          <p>Regras configuráveis que disparam alertas via email, WhatsApp ou push quando um KPI sai do range aceitável.</p>
+        </div>
+        <div class="feat-card glass">
+          <div class="feat-icon">📄</div>
+          <h3>Export automatizado</h3>
+          <p>Relatórios em PDF gerados automaticamente todo dia/semana/mês e enviados por email para a diretoria.</p>
+        </div>
+        <div class="feat-card glass">
+          <div class="feat-icon">🔒</div>
+          <h3>Controle de acesso</h3>
+          <p>Cada usuário vê apenas o que pode ver. Permissões granulares por dashboard, por métrica, por período.</p>
+        </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-label">Interface</div>
+  <h2 class="section-title">Cada tela pensada para resolver.</h2>
+  <p class="section-desc">Design funcional que prioriza usabilidade e velocidade. Zero decoração desnecessária.</p>
+  <div class="screens-grid">
+        <div class="screen-card">
+          <div class="screen-mock"><div style="background:linear-gradient(135deg, #0d1a2e, #1a0d3a);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;height:100%;">
+    <div style="height:32px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 12px;gap:6px;">
+      <span style="width:8px;height:8px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+    </div><div style="padding:16px;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;height:48px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid rgba(255,255,255,.05);"></div>
+        <div style="flex:1;height:48px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid rgba(255,255,255,.05);"></div>
+        <div style="flex:1;height:48px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid rgba(255,255,255,.05);"></div>
+      </div>
+      <div style="flex:1;height:120px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.04);"></div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:2;height:60px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.04);"></div>
+        <div style="flex:1;height:60px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.04);"></div>
+      </div>
+    </div></div></div>
+          <h4>Dashboard principal</h4>
+          <p>Visão geral com KPIs, gráficos de tendência e mapa de calor de vendas por região</p>
+        </div>
+        <div class="screen-card">
+          <div class="screen-mock"><div style="background:linear-gradient(135deg, #0a1e1e, #0d1a2e);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;height:100%;">
+    <div style="height:32px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 12px;gap:6px;">
+      <span style="width:8px;height:8px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+    </div><div style="padding:16px;display:flex;gap:8px;height:calc(100% - 32px);">
+      <div style="width:40px;background:rgba(255,255,255,.02);border-radius:8px;display:flex;flex-direction:column;gap:6px;padding:8px 4px;align-items:center;">
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.12);border-radius:2px;"></div>
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.06);border-radius:2px;"></div>
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.06);border-radius:2px;"></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div style="height:28px;background:rgba(255,255,255,.04);border-radius:6px;"></div>
+        <div style="flex:1;background:rgba(255,255,255,.02);border-radius:8px;display:flex;flex-direction:column;gap:4px;padding:8px;">
+          <div style="height:6px;width:70%;background:rgba(255,255,255,.06);border-radius:3px;"></div>
+          <div style="height:6px;width:50%;background:rgba(255,255,255,.04);border-radius:3px;"></div>
+          <div style="height:6px;width:80%;background:rgba(255,255,255,.06);border-radius:3px;"></div>
+          <div style="height:6px;width:40%;background:rgba(255,255,255,.04);border-radius:3px;"></div>
+        </div>
+        <div style="display:flex;gap:4px;"><div style="flex:1;height:40px;background:rgba(255,255,255,.03);border-radius:6px;"></div><div style="flex:1;height:40px;background:rgba(255,255,255,.03);border-radius:6px;"></div></div>
+      </div>
+    </div></div></div>
+          <h4>Editor de dashboards</h4>
+          <p>Drag-and-drop de componentes com preview em tempo real</p>
+        </div>
+        <div class="screen-card">
+          <div class="screen-mock"><div style="background:linear-gradient(135deg, #1a0d2e, #2d0a1a);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;height:100%;">
+    <div style="height:32px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 12px;gap:6px;">
+      <span style="width:8px;height:8px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+      <span style="width:8px;height:8px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+    </div><div style="padding:16px;display:flex;gap:8px;height:calc(100% - 32px);">
+      <div style="width:40px;background:rgba(255,255,255,.02);border-radius:8px;display:flex;flex-direction:column;gap:6px;padding:8px 4px;align-items:center;">
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.12);border-radius:2px;"></div>
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.06);border-radius:2px;"></div>
+        <div style="width:6px;height:6px;background:rgba(255,255,255,.06);border-radius:2px;"></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div style="height:28px;background:rgba(255,255,255,.04);border-radius:6px;"></div>
+        <div style="flex:1;background:rgba(255,255,255,.02);border-radius:8px;display:flex;flex-direction:column;gap:4px;padding:8px;">
+          <div style="height:6px;width:70%;background:rgba(255,255,255,.06);border-radius:3px;"></div>
+          <div style="height:6px;width:50%;background:rgba(255,255,255,.04);border-radius:3px;"></div>
+          <div style="height:6px;width:80%;background:rgba(255,255,255,.06);border-radius:3px;"></div>
+          <div style="height:6px;width:40%;background:rgba(255,255,255,.04);border-radius:3px;"></div>
+        </div>
+        <div style="display:flex;gap:4px;"><div style="flex:1;height:40px;background:rgba(255,255,255,.03);border-radius:6px;"></div><div style="flex:1;height:40px;background:rgba(255,255,255,.03);border-radius:6px;"></div></div>
+      </div>
+    </div></div></div>
+          <h4>Configuração de alertas</h4>
+          <p>Regras condicionais com preview e histórico de disparos</p>
+        </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-label">Resultados</div>
+  <h2 class="section-title">Números que falam por si.</h2>
+  <div class="results-grid" style="margin-top:32px">
+        <div class="res-item">
+          <div class="res-num">3 dias → 0</div>
+          <div class="res-label">Tempo de compilação de relatórios eliminado completamente</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">Tempo real</div>
+          <div class="res-label">Dados atualizados em menos de 3 segundos</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">8 fontes</div>
+          <div class="res-label">Conectadas e sincronizadas automaticamente</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">40%</div>
+          <div class="res-label">Decisões mais rápidas segundo a diretoria</div>
+        </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-label">Tecnologia</div>
+  <h2 class="section-title">Stack moderna, código que dura.</h2>
+  <div class="tech-grid" style="margin-top:32px">
+        <div class="tech-item">
+          <div class="tech-name">Next.js 14</div>
+          <div class="tech-desc">Frontend com App Router, Server Components e streaming SSR</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-name">PostgreSQL</div>
+          <div class="tech-desc">Banco relacional principal com views materializadas para performance</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-name">Redis</div>
+          <div class="tech-desc">Cache de queries pesadas e pub/sub para real-time</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-name">Prisma</div>
+          <div class="tech-desc">ORM type-safe com migrations automatizadas</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-name">Chart.js + D3</div>
+          <div class="tech-desc">Visualizações interativas customizáveis</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-name">Vercel</div>
+          <div class="tech-desc">Deploy com edge functions e CDN global</div>
+        </div>
+  </div>
+</div></section>
+
+<div class="wrap">
+  <div class="testi-block glass">
+    <p class="testi-quote">"Antes a gente levava 3 dias pra montar um relatório. Agora é em tempo real. A Koddex entregou em 12 dias o que achávamos que levaria meses."</p>
+    <div class="testi-author">Diretor de Operações</div>
+    <div class="testi-role">Indústria · Presidente Prudente</div>
+  </div>
+</div>
+
+<section class="cta-section"><div class="wrap">
+  <div class="section-label" style="justify-content:center">Quer algo assim?</div>
+  <h2>Seu projeto pode ser o próximo case.</h2>
+  <p>Orçamento grátis em 1 hora. Entrega em dias, não em meses.</p>
+  <div class="cta-btns">
+    <a class="btn-neon" href="https://wa.me/5518991979766?text=Oi!%20Vi%20o%20case%20Métrica%20BI%20e%20quero%20algo%20parecido." target="_blank">Quero um projeto assim ⚡</a>
+    <a class="btn-glass" href="index.html#portfolio">Ver outros cases →</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <p>© 2026 <a href="index.html">Koddex</a> · Presidente Prudente, SP · <a href="mailto:alexandre@koddex.com.br">alexandre@koddex.com.br</a></p>
+</div></footer>
+
+<a href="https://wa.me/5518991979766?text=Oi!%20Vim%20do%20case%20Métrica%20BI%20no%20site" target="_blank" class="wpp" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+</body>
+</html>
