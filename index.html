@@ -513,64 +513,88 @@
     letter-spacing: .05em;
   }
 
-  /* Case visuals */
-  .case-1 .visual {
-    background:
-      radial-gradient(circle at 30% 50%, var(--neon), transparent 50%),
-      radial-gradient(circle at 70% 50%, var(--neon-3), transparent 50%),
-      var(--bg-2);
-  }
-  .case-1 .visual::before {
-    content: 'BI';
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Major Mono Display', monospace;
-    font-size: 80px;
-    color: white;
-    text-shadow: 0 0 30px rgba(0,255,209,.6);
-  }
+  /* Case visuals — UI mockups */
+  .case .visual { background: #080514; padding: 0; display: flex; flex-direction: column; }
+  .case .visual .mock-bar { height: 20px; background: rgba(255,255,255,.02); border-bottom: 1px solid rgba(255,255,255,.04); display: flex; align-items: center; padding: 0 8px; gap: 4px; flex-shrink: 0; }
+  .case .visual .mock-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .case .visual .mock-dot.r { background: #ff5f57; } .case .visual .mock-dot.y { background: #febc2e; } .case .visual .mock-dot.g { background: #28c840; }
+  .case .visual .mock-url { margin-left: 6px; font-family: 'JetBrains Mono',monospace; font-size: 8px; color: rgba(255,255,255,.2); background: rgba(255,255,255,.03); padding: 1px 8px; border-radius: 3px; }
+  .case .visual .mock-body { flex: 1; display: flex; overflow: hidden; }
+  .case .visual .mock-sidebar { width: 28px; background: rgba(255,255,255,.015); border-right: 1px solid rgba(255,255,255,.03); display: flex; flex-direction: column; gap: 4px; padding: 6px 4px; }
+  .case .visual .mock-sb { width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,.03); }
+  .case .visual .mock-sb.active { background: rgba(0,255,209,.1); }
+  .case .visual .mock-main { flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
 
-  .case-2 .visual {
-    background:
-      linear-gradient(135deg, var(--neon-2) 0%, var(--neon-3) 100%);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr 1fr;
-    gap: 8px;
-    padding: 24px;
-  }
-  .case-2 .visual > div {
-    background: rgba(255,255,255,.15);
-    backdrop-filter: blur(10px);
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,.2);
-  }
+  /* Case 1: Métrica BI — Dashboard */
+  .case-1 .visual { border-color: rgba(0,255,209,.15); }
+  .case-1 .mock-sb.active { background: rgba(0,255,209,.12); }
+  .c1-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
+  .c1-kpi { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.03); border-radius: 6px; padding: 6px; }
+  .c1-kpi-val { font-family: 'Space Grotesk',sans-serif; font-size: 11px; font-weight: 700; color: #f0e9ff; }
+  .c1-kpi-bar { height: 3px; border-radius: 2px; margin-top: 4px; }
+  .c1-chart { flex: 1; position: relative; min-height: 0; }
+  .c1-chart svg { width: 100%; height: 100%; }
+  .c1-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .c1-col { background: rgba(255,255,255,.015); border-radius: 4px; height: 28px; }
 
-  .case-3 .visual {
-    background: linear-gradient(135deg, var(--neon-4), var(--neon-2));
-    display: grid; place-items: center;
-  }
-  .case-3 .visual::before {
-    content: '+';
-    font-family: 'Major Mono Display', monospace;
-    font-size: 160px;
-    color: white;
-    text-shadow: 0 0 40px rgba(255,234,0,.8);
-    line-height: .7;
-  }
+  /* Case 2: FrotaCloud — Mapa */
+  .case-2 .visual { border-color: rgba(255,0,170,.15); }
+  .case-2 .mock-sb.active { background: rgba(255,0,170,.12); }
+  .case-2 .visual > div { background: none; backdrop-filter: none; border: none; border-radius: 0; }
+  .c2-map { flex: 1; position: relative; background: rgba(255,255,255,.01); border-radius: 6px; overflow: hidden; }
+  .c2-road { position: absolute; background: rgba(255,255,255,.04); }
+  .c2-road.h { height: 1px; } .c2-road.v { width: 1px; }
+  .c2-pin { position: absolute; font-size: 10px; filter: drop-shadow(0 0 6px rgba(255,0,170,.5)); animation: c2float 3s ease-in-out infinite; }
+  @keyframes c2float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)} }
+  .c2-pin:nth-child(3){animation-delay:.4s} .c2-pin:nth-child(4){animation-delay:.8s} .c2-pin:nth-child(5){animation-delay:1.2s} .c2-pin:nth-child(6){animation-delay:1.6s}
+  .c2-card { position: absolute; top: 6px; right: 6px; background: rgba(10,5,20,.85); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 6px 8px; }
+  .c2-card-title { font-size: 8px; font-weight: 700; color: #f0e9ff; }
+  .c2-card-status { font-family: 'JetBrains Mono',monospace; font-size: 7px; color: #00ffd1; margin-top: 2px; }
+  .c2-stats { display: flex; gap: 2px; flex-shrink: 0; }
+  .c2-stat { flex: 1; background: rgba(255,255,255,.015); text-align: center; padding: 4px; border-radius: 4px; }
+  .c2-stat-num { font-size: 12px; font-weight: 800; line-height: 1; }
+  .c2-stat-num.green { color: #00ffd1; } .c2-stat-num.yellow { color: #ffea00; } .c2-stat-num.red { color: #ff5f57; }
+  .c2-stat-label { font-size: 6px; color: rgba(255,255,255,.3); margin-top: 1px; }
 
-  .case-4 .visual {
-    background: linear-gradient(135deg, var(--neon-3), var(--neon));
-    display: flex; align-items: center; justify-content: center;
-  }
-  .case-4 .visual::before {
-    content: '{ }';
-    font-family: 'Major Mono Display', monospace;
-    font-size: 80px;
-    color: white;
-    text-shadow: 0 0 30px rgba(98,0,255,.8);
-    letter-spacing: -.05em;
-  }
+  /* Case 3: Clinik Pro — App mobile */
+  .case-3 .visual { border-color: rgba(255,234,0,.15); background: linear-gradient(135deg, #0d0818, #120a20) !important; display: flex !important; align-items: center; justify-content: center; flex-direction: row !important; gap: 10px; padding: 12px !important; }
+  .case-3 .visual::before { display: none; }
+  .c3-phone { width: 100px; background: #0a0616; border-radius: 16px; border: 1.5px solid rgba(255,255,255,.08); padding: 4px; flex-shrink: 0; }
+  .c3-notch { width: 32px; height: 3px; background: rgba(255,255,255,.06); border-radius: 2px; margin: 2px auto 4px; }
+  .c3-screen { background: #080414; border-radius: 12px; overflow: hidden; }
+  .c3-header { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,.03); display: flex; justify-content: space-between; }
+  .c3-header span { font-size: 7px; font-weight: 700; } .c3-header small { font-size: 6px; color: rgba(255,255,255,.3); }
+  .c3-slot { display: flex; align-items: center; gap: 4px; padding: 3px 6px; border-bottom: 1px solid rgba(255,255,255,.02); }
+  .c3-time { font-family: 'JetBrains Mono',monospace; font-size: 6px; color: rgba(255,255,255,.3); min-width: 18px; }
+  .c3-name { font-size: 6px; color: rgba(255,255,255,.6); flex: 1; }
+  .c3-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+  .c3-dot.ok { background: #00ffd1; } .c3-dot.now { background: #ffea00; animation: c3pulse 1.5s infinite; } .c3-dot.wait { background: rgba(255,255,255,.15); }
+  @keyframes c3pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+  .c3-nav { display: flex; border-top: 1px solid rgba(255,255,255,.03); }
+  .c3-nav span { flex: 1; text-align: center; font-size: 8px; padding: 4px 0; opacity: .3; } .c3-nav span.active { opacity: 1; background: rgba(255,234,0,.06); }
+
+  /* Case 4: Sync Commerce — Hub de conexões */
+  .case-4 .visual { border-color: rgba(98,0,255,.2); }
+  .case-4 .visual::before { display: none; }
+  .case-4 .mock-sb.active { background: rgba(98,0,255,.12); }
+  .c4-hub { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+  .c4-center { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#6200ff,#00ffd1); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono',monospace; font-size: 6px; font-weight: 700; color: white; box-shadow: 0 0 20px rgba(98,0,255,.4); z-index: 2; position: relative; }
+  .c4-node { position: absolute; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 6px; padding: 2px 6px; font-family: 'JetBrains Mono',monospace; font-size: 7px; color: rgba(255,255,255,.5); }
+  .c4-node::after { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #00ffd1; animation: c4p 2s infinite; }
+  .c4-node:nth-child(2)::after { animation-delay: .3s; } .c4-node:nth-child(3)::after { animation-delay: .6s; }
+  .c4-node:nth-child(4)::after { animation-delay: .9s; } .c4-node:nth-child(5)::after { animation-delay: 1.2s; } .c4-node:nth-child(6)::after { animation-delay: 1.5s; }
+  @keyframes c4p { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)} }
+  .c4-n1 { top: 8%; left: 8%; } .c4-n1::after { right: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-n2 { top: 8%; right: 8%; } .c4-n2::after { left: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-n3 { top: 45%; left: 3%; } .c4-n3::after { right: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-n4 { top: 45%; right: 3%; } .c4-n4::after { left: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-n5 { bottom: 8%; left: 10%; } .c4-n5::after { right: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-n6 { bottom: 8%; right: 10%; } .c4-n6::after { left: -6px; top: 50%; transform: translateY(-50%); }
+  .c4-log { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .c4-log-row { display: flex; align-items: center; gap: 4px; font-size: 7px; padding: 2px 4px; background: rgba(255,255,255,.01); border-radius: 3px; }
+  .c4-log-time { font-family: 'JetBrains Mono',monospace; color: rgba(255,255,255,.2); font-size: 6px; }
+  .c4-log-ok { color: #00ffd1; font-size: 7px; }
+  .c4-log-msg { color: rgba(255,255,255,.35); font-size: 7px; }
 
   /* ============ PROCESS ============ */
   .process {
@@ -1563,8 +1587,23 @@
   </div>
 
   <div class="portfolio">
-    <a href="#" class="case glass case-1">
-      <div class="visual"></div>
+    <a href="case-metrica-bi.html" class="case glass case-1">
+      <div class="visual">
+        <div class="mock-bar"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span><span class="mock-url">app.metrica-bi.com.br</span></div>
+        <div class="mock-body">
+          <div class="mock-sidebar"><div class="mock-sb active"></div><div class="mock-sb"></div><div class="mock-sb"></div><div class="mock-sb"></div></div>
+          <div class="mock-main">
+            <div class="c1-kpis">
+              <div class="c1-kpi"><div class="c1-kpi-val">R$ 2.4M</div><div class="c1-kpi-bar" style="background:linear-gradient(90deg,rgba(0,255,209,.3),rgba(0,255,209,.08));width:80%"></div></div>
+              <div class="c1-kpi"><div class="c1-kpi-val">1.247</div><div class="c1-kpi-bar" style="background:linear-gradient(90deg,rgba(98,0,255,.3),rgba(98,0,255,.08));width:65%"></div></div>
+              <div class="c1-kpi"><div class="c1-kpi-val">94.2%</div><div class="c1-kpi-bar" style="background:linear-gradient(90deg,rgba(255,234,0,.3),rgba(255,234,0,.08));width:94%"></div></div>
+              <div class="c1-kpi"><div class="c1-kpi-val">8</div><div class="c1-kpi-bar" style="background:linear-gradient(90deg,rgba(255,0,170,.3),rgba(255,0,170,.08));width:100%"></div></div>
+            </div>
+            <div class="c1-chart"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0,60 C40,55 80,25 140,35 C200,45 240,10 300,18 C340,22 380,8 400,5 L400,80 L0,80Z" fill="rgba(0,255,209,.06)"/><path d="M0,60 C40,55 80,25 140,35 C200,45 240,10 300,18 C340,22 380,8 400,5" fill="none" stroke="#00ffd1" stroke-width="1.5" opacity=".7"/></svg></div>
+            <div class="c1-cols"><div class="c1-col"></div><div class="c1-col"></div></div>
+          </div>
+        </div>
+      </div>
       <div class="case-content">
         <span class="case-meta">SaaS · Dashboard · 2026</span>
         <h3>Métrica BI</h3>
@@ -1575,9 +1614,31 @@
       </div>
     </a>
 
-    <a href="#" class="case glass case-2">
+    <a href="case-frotacloud.html" class="case glass case-2">
       <div class="visual">
-        <div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="mock-bar"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span><span class="mock-url">fleet.frotacloud.com.br</span></div>
+        <div class="mock-body">
+          <div class="mock-sidebar"><div class="mock-sb active"></div><div class="mock-sb"></div><div class="mock-sb"></div></div>
+          <div class="mock-main">
+            <div class="c2-map">
+              <div class="c2-road h" style="top:30%;left:10%;width:80%"></div>
+              <div class="c2-road h" style="top:60%;left:15%;width:65%"></div>
+              <div class="c2-road v" style="left:40%;top:10%;height:80%"></div>
+              <div class="c2-road v" style="left:72%;top:20%;height:55%"></div>
+              <div class="c2-pin" style="top:25%;left:22%">🚛</div>
+              <div class="c2-pin" style="top:55%;left:50%">🚛</div>
+              <div class="c2-pin" style="top:30%;left:65%">🚛</div>
+              <div class="c2-pin" style="top:62%;left:28%">🚛</div>
+              <div class="c2-pin" style="top:40%;left:78%">🚛</div>
+              <div class="c2-card"><div class="c2-card-title">Veículo #127</div><div class="c2-card-status">● Em rota · 82km/h</div></div>
+            </div>
+            <div class="c2-stats">
+              <div class="c2-stat"><div class="c2-stat-num green">287</div><div class="c2-stat-label">Em rota</div></div>
+              <div class="c2-stat"><div class="c2-stat-num yellow">41</div><div class="c2-stat-label">Parados</div></div>
+              <div class="c2-stat"><div class="c2-stat-num red">12</div><div class="c2-stat-label">Manuten.</div></div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="case-content">
         <span class="case-meta">ERP · Logística · 2025</span>
@@ -1589,8 +1650,38 @@
       </div>
     </a>
 
-    <a href="#" class="case glass case-3">
-      <div class="visual"></div>
+    <a href="case-clinik-pro.html" class="case glass case-3">
+      <div class="visual">
+        <div class="c3-phone">
+          <div class="c3-notch"></div>
+          <div class="c3-screen">
+            <div class="c3-header"><span>Agenda · Hoje</span><small>24 Abr</small></div>
+            <div class="c3-slot"><span class="c3-time">08:00</span><span class="c3-name">Maria Silva</span><span class="c3-dot ok"></span></div>
+            <div class="c3-slot"><span class="c3-time">09:00</span><span class="c3-name">João Santos</span><span class="c3-dot ok"></span></div>
+            <div class="c3-slot" style="background:rgba(255,234,0,.04)"><span class="c3-time">10:00</span><span class="c3-name">Ana Oliveira</span><span class="c3-dot now"></span></div>
+            <div class="c3-slot"><span class="c3-time">11:00</span><span class="c3-name">Carlos Lima</span><span class="c3-dot wait"></span></div>
+            <div class="c3-slot"><span class="c3-time">14:00</span><span class="c3-name">Paula Ferreira</span><span class="c3-dot wait"></span></div>
+            <div class="c3-nav"><span class="active">📅</span><span>📋</span><span>💊</span><span>💰</span></div>
+          </div>
+        </div>
+        <div class="c3-phone">
+          <div class="c3-notch"></div>
+          <div class="c3-screen">
+            <div class="c3-header"><span>Prontuário</span><small>Ana Oliveira</small></div>
+            <div style="padding:4px 6px">
+              <div style="font-size:6px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Histórico</div>
+              <div style="border-left:1px solid rgba(255,255,255,.06);padding-left:6px;display:flex;flex-direction:column;gap:3px">
+                <div style="font-size:6px;color:rgba(255,255,255,.4)">● Consulta · 15 Mar</div>
+                <div style="font-size:6px;color:rgba(255,255,255,.4)">● Limpeza · 10 Fev</div>
+                <div style="font-size:6px;color:rgba(255,255,255,.4)">● Raio-X · 08 Jan</div>
+              </div>
+              <div style="margin-top:6px;height:6px;background:rgba(255,255,255,.03);border-radius:3px"></div>
+              <div style="margin-top:3px;height:6px;width:60%;background:rgba(255,255,255,.02);border-radius:3px"></div>
+            </div>
+            <div class="c3-nav"><span>📅</span><span class="active">📋</span><span>💊</span><span>💰</span></div>
+          </div>
+        </div>
+      </div>
       <div class="case-content">
         <span class="case-meta">App · Saúde · 2025</span>
         <h3>Clinik Pro</h3>
@@ -1601,8 +1692,29 @@
       </div>
     </a>
 
-    <a href="#" class="case glass case-4">
-      <div class="visual"></div>
+    <a href="case-sync-commerce.html" class="case glass case-4">
+      <div class="visual">
+        <div class="mock-bar"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span><span class="mock-url">sync.commerce.com.br</span></div>
+        <div class="mock-body">
+          <div class="mock-sidebar"><div class="mock-sb active"></div><div class="mock-sb"></div><div class="mock-sb"></div></div>
+          <div class="mock-main">
+            <div class="c4-hub">
+              <div class="c4-center">SYNC</div>
+              <div class="c4-node c4-n1">Shopify</div>
+              <div class="c4-node c4-n2">ML</div>
+              <div class="c4-node c4-n3">Nuvem</div>
+              <div class="c4-node c4-n4">TOTVS</div>
+              <div class="c4-node c4-n5">Magento</div>
+              <div class="c4-node c4-n6">Loja 6</div>
+            </div>
+            <div class="c4-log">
+              <div class="c4-log-row"><span class="c4-log-time">14:32</span><span class="c4-log-ok">✓</span><span class="c4-log-msg">Sync estoque → Shopify</span></div>
+              <div class="c4-log-row"><span class="c4-log-time">14:31</span><span class="c4-log-ok">✓</span><span class="c4-log-msg">Pedido #8847 → TOTVS</span></div>
+              <div class="c4-log-row"><span class="c4-log-time">14:31</span><span class="c4-log-ok">✓</span><span class="c4-log-msg">Preço update → ML</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="case-content">
         <span class="case-meta">API · E-commerce · 2025</span>
         <h3>Sync Commerce</h3>
